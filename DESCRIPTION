@@ -1,0 +1,11 @@
+Package: brlm
+Type: Package
+Title: Bayesian Restricted Liklihood Methods
+Version: 0.1
+Date: 2015-12-05
+Author@R: person("John", "Lewis, R.",
+email = "lewis.865@osu.edu",
+                 role = c("aut", "cre")
+Description: Implements Bayesian Restricted Likelihood Methods Developed in John R. Lewis' Ph.D. Research
+License: MIT + file LICENSE
+LazyData: TRUE
