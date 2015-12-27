@@ -1,4 +1,4 @@
-#' Location and Scale Model Conditioning on order statistics
+#' Order statistics likelihood as the restricted likelihood in a standard location-scale Bayesian model.
 #'
 #' Conditioning on a set of order statistics under a Guassian location and scale model.
 #' The full model is: \deqn{
@@ -8,10 +8,10 @@
 #' }
 #' Conditioning is on a middle set of order statistics \eqn{(Y_{(k+1)}, \dots Y_{(n-k)})} so that if \eqn{k=0}, the full normal theory model is fit
 #'
-#' Fit is done a grid of \eqn{\theta} and \eqn{sigma^2} using Reimann sum numerical integration to find the marginal distribution of the data. This is rather naive but is relatively quick - it only works well if the choice of grid on which the Reimann sum is done is chosen carefully. The grid is specified by \code{theta.lims}, \code{sigma2.lims}, \code{length.theta}, and \code{length.sigma2}. The grid should cover the region of non-negligble posterior mass. The number of grid points (\code{length.theta}/\code{length.sigma2}) must be large enough for good precision. However, larger values increase computation time.
+#' Fit is done a grid of \eqn{\theta} and \eqn{\sigma^2} using Riemann sum numerical integration to find the marginal distribution of the data. This is rather naive but is relatively quick - it only works well if the choice of grid on which the Riemann sum is done is chosen carefully. The grid is specified by \code{theta.lims}, \code{sigma2.lims}, \code{length.theta}, and \code{length.sigma2}. The grid should cover the region of non-negligble posterior mass. The number of grid points (\code{length.theta}/\code{length.sigma2}) must be large enough for good precision. However, larger values increase computation time.
 #'
-#' @param y  the data data
-#' @parm k choice for the order statistics
+#' @param y  vector of data
+#' @parm k numeric: choice of k determining the set of order statistics on which to condition.
 #' @param theta.lims,sigma2.lims vectors of length 2 specifying the lower and upper limits for the numerical integration. Should span region of non-negligble posterior probability, otherwise the posterior will be incorrect
 #' @param length.theta,length.sigma2 Number of grid points for each parameter used in the numerical integration
 #' @param mu,tau mean and standard deviation of the normal prior distribution on \eqn{\theta}
