@@ -74,10 +74,18 @@ tst$postMeans
 
 #fits used in my dissertation
 load("~/Dropbox/school/osu/dissertationResearch/snm/locationAndScale/dataAnalysis/newcomb/directSampling/wsNewcombDirectSamplingHuber2.RData")
+library(MASS)
+library(MCMCpack)
+library(ks)
 set.seed(1)
-fit<-rlDirectEval(y=newcomb, psi=psi.huber, scale.est='Huber', eta=23.6, tau=2.04, alpha=5, beta=10, mu_lims=c(20,32), sigma2_lims=c(0.001,100), length_mu=500, length_sigma2=500,smooth=1,N=1e5)
+
+ft1<-rlm(newcomb~1)
+vcov(ft1)
+
+
+fit<-rlDirectEval(y=newcomb, psi=psi.huber, scale.est='Huber', eta=23.6, tau=2.04, alpha=5, beta=10, mu_lims=c(20,32), sigma2_lims=c(0.001,100), length_mu=300, length_sigma2=300,smooth=1,N=1e4)
 fit$H
-set.seed(1)
+# set.seed(1)
 fit2<-rlDirectEval(y=newcomb, psi=psi.huber, scale.est='Huber',eta=23.6, tau=2.04, alpha=5, beta=10, mu_lims=c(20,32), sigma2_lims=c(0.001,100), length_mu=100, length_sigma2=100,smooth=1,N=1e3,maxit=1000)
 
 
@@ -87,3 +95,14 @@ lines(fit2$muPost[,1],fit2$muPost[,2])
 plot(fit$sigma2Post[,1],fit$sigma2Post[,2], type='l')
 lines(sigma2.grid, post.sigma2.pdf, col=2)
 lines(fit2$sigma2Post[,1],fit2$sigma2Post[,2])
+
+
+
+ y<-data(MASS::newcomb)
+set.seed(1)
+  fit<-rlDirectEval(y=newcomb, psi=psi.huber, scale.est='Huber', eta=23.6, tau=2.04, alpha=5, beta=10, mu_lims=c(20,32), sigma2_lims=c(0.001,100), length_mu=150, length_sigma2=150,smooth=1,N=300)
+ fit
+ plot(fit$muPost[,1],fit$muPost[,2], type='l', col=4)
+
+ plot(fit$sigma2Post[,1],fit$sigma2Post[,2], type='l')
+

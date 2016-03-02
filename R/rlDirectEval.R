@@ -1,18 +1,18 @@
 #' Fitting restricted likelihood location-scale model using direct evaluation.
 #'
 #' Full model: \deqn{
-#' \mu~N(\eta, \tau^2)
-#' \sigma^2~IG(\alpha, \beta)
+#' \mu~N(\eta, \tau^2),
+#' \sigma^2~IG(\alpha, \beta),
 #' y_1, \dots, y_n~N(\mu, \sigma^2)
 #' }
 #' For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y)=(l(y), s(y))} with the property that \eqn{l(\sigma y+\mu)=\sigma l(y)+\mu} and \eqn{s(\sigma y+\mu)=\sigma s(y)}.Current implementation allows for these to be a pair of M-estimators as implemented in \code{\link[MASS]{rlm}}
 #'
-#' Direct evaluation uses kenerel density estimation with a Gaussian kernel to estimate the restricted likelihood. \code{N} specifies the number of samples of the statistics to generate for the kernel density estimate. \code{\link[ks]{hpi}} is used to specify the initial bandwidths independently for the location and the scale. These can be multiplied by \code{smooth} to 'oversmooth' or 'undersmooth' the estimate. Oversmoothing may result in more stable estimates.
+#' Direct evaluation uses kernel density estimation with a Gaussian kernel to estimate the restricted likelihood. \code{N} specifies the number of samples of the statistics to generate for the kernel density estimate. \code{\link[ks]{hpi}} is used to specify the initial bandwidths independently for the location and the scale. These can be multiplied by \code{smooth} to 'oversmooth' or 'undersmooth' the estimate. Oversmoothing may result in more stable estimates.
 #'
 #' A simple Riemann sum is used to determine the normalizing constant. Parameters for this numerical integration are specified by \code{mu_lims,sigma2_lims, length_mu}, and \code{length_sigma2}.
 
 #' @param y  vector of data
-#' @param psi the \code{psi} function used to define the location estimator. It is a function (possibly give by name) that is described in \code{\link[MASS]{rlm}}. Tuning constants are passed via \code{...}
+#' @param psi the \code{psi} function used to define the location estimator. It is a function (possibly given by name) that is described in \code{\link[MASS]{rlm}}. Tuning constants are passed via \code{...}
 #' @param scale.est,k2 specification of the scale estimator (issued by name- either \code{'MAD', 'Huber'}, or \code{'proposal 2'}) and the tuning constant for the Huber proposal 2 scale estimation. See these parameters in \code{\link[MASS]{rlm}} for more information.
 #'
 #' @param eta,tau prior mean and standard deviation for \eqn{mu}
@@ -25,7 +25,18 @@
 #'@param maxit the limit on the number of IWLS iterations. Same as in \code{\link[MASS]{rlm}}
 #' @param ... additional arguments to be passed to \code{psi}
 #' @return A list of length 4: the joint posterior, the two marginals, and the bandwidths used for the kernel density estimate
-
+  #' @examples
+  #' set.seed(1) # for reproducibility,
+  #' length_mu, length_sigma2, N should be larger
+  #' in reality - they are small so the example runs quickly
+  #' y<-data(MASS::newcomb)
+  #' fit<-rlDirectEval(y=newcomb, psi=psi.bisquare, scale.est='Huber',
+  #'    eta=23.6, tau=2.04, alpha=5, beta=10, mu_lims=c(20,32),
+  #'    sigma2_lims=c(0.001,100), length_mu=20, length_sigma2=20,
+  #'    smooth=1,N=100)
+  #' names(fit)
+  #' plot(fit$muPost[,1],fit$muPost[,2], type='l', col=4)
+  #' plot(fit$sigma2Post[,1],fit$sigma2Post[,2], type='l')
 #'@export
 rlDirectEval<-function(y, psi,..., scale.est='Huber',k2=1.345, eta, tau, alpha, beta, mu_lims, sigma2_lims,length_mu, length_sigma2, smooth=1,N, maxit=1000){
 

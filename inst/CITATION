@@ -1,0 +1,11 @@
+citHeader("To cite brlm in publications use:")
+
+citEntry(entry = "PhDThesis",
+  title        = "Bayesian Restricted Likelihood Methods",
+  school       = "The Ohio State University",
+  author       = personList(as.person("John R. Lewis")),
+  year         = "2014",
+  textVersion  =
+  paste("John R. Lewis.",
+        "Bayesian Restricted Likelihood Methods. PhD Dissertation, The Ohio State University (2014)")
+)
