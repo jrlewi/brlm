@@ -1,6 +1,6 @@
 #' A standard Bayesian mixture model using a mixture of normal distributions for the likelihood.
 #'
-#' Fiting the follwing mixture model: \deqn{
+#' Fiting the following mixture model: \deqn{
 #' \theta\sim N(\mu, \tau^2),
 #' \sigma^2 \sim IG(\alpha, \beta),
 #' y_i~(1-p)N(\theta, \sigma^2)+pN(\theta, c*\sigma^2)

@@ -64,7 +64,6 @@ s.obs<-rlm.obs$s
 log.s.obs<-log(s.obs)
 
 #define the grid
-#delta.mu<-.02  #distance between points on mu grid
 
 mu.grid<-seq(mu_lims[1], mu_lims[2],length.out=length_mu)
 delta.mu<-diff(mu.grid[1:2])
