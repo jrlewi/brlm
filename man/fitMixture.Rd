@@ -22,7 +22,7 @@ fitMixture(y, theta.lims, length.theta, sigma2.lims, length.sigma2, mu, tau,
 A list of length 4: the joint posterior, the two marginals, and the posterior means
 }
 \description{
-Fiting the follwing mixture model: \deqn{
+Fiting the following mixture model: \deqn{
 \theta\sim N(\mu, \tau^2),
 \sigma^2 \sim IG(\alpha, \beta),
 y_i~(1-p)N(\theta, \sigma^2)+pN(\theta, c*\sigma^2)
