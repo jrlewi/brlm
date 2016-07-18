@@ -3,7 +3,7 @@ Type: Package
 Title: Bayesian Restricted Likelihood Methods
 Version: 0.1
 Imports: MASS (>= 7.3-45), MCMCpack (>= 1.3-3),
-  mvtnorm (>= 1.0.3)
+  mvtnorm (>= 1.0.3), mvtnorm (>=1.0-3)
 Author@R: person("John", "Lewis R.", role = c("aut",
     "cre"), email = "lewis.865@osu.edu")
 Description: Implements Bayesian Restricted Likelihood Methods described in my
