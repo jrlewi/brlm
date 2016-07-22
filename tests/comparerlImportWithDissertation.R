@@ -17,8 +17,10 @@ X<-cbind(rep(1, n), phonesFit$year)
 y<-phonesFit$calls
 phonesPrior<-phones[c(1:nForPrior),]
 
-
-
+fit<-rlm(calls~year,data=phonesFit, maxit=100, psi=psi.bisquare)
+summary(fit)
+fit2<-rlm(X,y, maxit=100, psi=psi.bisquare)
+summary(fit2)
 
 #priors
 priorFit<-lm(calls~year, data=phonesPrior)
@@ -36,13 +38,27 @@ beta/(alpha-1)
 # integrate(dinvgamma, 0,s.obs^2,shape=alpha,scale=beta)
 # beta^2/((alpha-1)^2*(alpha-2))
 library(mvtnorm)
-inflate<-2
+source('~/Dropbox/school/osu/dissertationResearch/snm/rPackage/brlm/R/rlImportSamp.R')
+inflate<-10
 Sigma0<-vinflate[inflate]*vcov(priorFit)
 
-x=X;y=y; psi=psi.bisquare; scale.est='MAD'; mu0=mu0; Sigma0=Sigma0; alpha=alpha; beta=beta; smooth=1;N=1000;Nins=100; maxit=1000; k2=1.345
+y=y; psi=psi.bisquare; scale.est='MAD'; mu0=mu0; Sigma0=Sigma0; alpha=alpha; beta=beta; smooth=1;N=100;Nins=100; maxit=1000; k2=1.345
 
 
 
-tst<-rlImportSamp(x=X,y=y, psi=psi.bisquare, scale.est='Huber', mu0=mu0, Sigma0=Sigma0, alpha=alpha, beta=beta, smooth=1,N=10000,Nins=10000, maxit=1000)
-tst
+tst<-rlImportSamp(X=X,y=y, psi=psi.bisquare, scale.est=scale.est, mu0=mu0, Sigma0=Sigma0, alpha=alpha, beta=beta, smooth=1,N=1e4,Nins=1e4, maxit=10000)
+
 plot(tst$w, cex=.1, pch=19)
+plot(density(tst$impSamps[,1],weights=tst$w))
+abline(v=b.obs[1], col=2)
+plot(density(tst$impSamps[,2],weights=tst$w))
+abline(v=b.obs[2], col=2)
+plot(density(tst$impSamps[,3],weights=tst$w))
+abline(v=s.obs, col=2)
+abline(h=11)
+range(tst$impSamps[,3])
+weighted.mean(tst$impSamps[,1],tst$w)
+weighted.mean(tst$impSamps[,2],tst$w)
+b.obs
+weighted.mean(tst$impSamps[,3],tst$w)
+s.obs^2

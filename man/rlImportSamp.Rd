@@ -4,18 +4,16 @@
 \alias{rlImportSamp}
 \title{Fitting restricted likelihood model using importance sampling technique.}
 \usage{
-rlImportSamp(x, y, psi, ..., scale.est = "Huber", k2 = 1.345, mu0, Sigma0,
-  alpha, beta, instDist = NULL, sdInstDist = NULL, smooth = 1, N, Nins,
-  maxit = 1000)
+rlImportSamp(X, y, psi, scale.est = "Huber", k2 = 1.345, mu0, Sigma0, alpha,
+  beta, instDist = NULL, sdInstDist = NULL, smooth = 1, N, Nins,
+  maxit = 1000, ...)
 }
 \arguments{
-\item{x}{a matrix or data frame containing the explanatory variables. The matrix should include a vector of 1's if intercept is desired.}
+\item{X}{a matrix or data frame containing the explanatory variables. The matrix should include a vector of 1's if intercept is desired.}
 
 \item{y}{vector of data}
 
 \item{psi}{the \code{psi} function used to define the location estimator. It is a function (possibly given by name) that is described in \code{\link[MASS]{rlm}}. Tuning constants are passed via \code{...}}
-
-\item{...}{additional arguments to be passed to \code{psi}}
 
 \item{scale.est}{specification of the scale estimator (issued by name- either \code{'MAD', 'Huber'}, or \code{'proposal 2'}) and the tuning constant for the Huber proposal 2 scale estimation. See these parameters in \code{\link[MASS]{rlm}} for more information.}
 
@@ -25,7 +23,7 @@ rlImportSamp(x, y, psi, ..., scale.est = "Huber", k2 = 1.345, mu0, Sigma0,
 
 \item{beta}{prior shape and scale for \eqn{sigma^2}}
 
-\item{instDist}{Placeholder to allow for more user specific instrumental distributions in the future. Currently not used.}
+\item{instDist}{Placeholder to allow for more user specific instrumental distributions. Currently not used.}
 
 \item{sdInstDist}{Vector of length 2 defining the scale for the instrumental distribution when instDist=NULL. In this case, the instrumental distribution for \eqn{\mu} and \eqn{\sigma^2} are independent normal and log normal distributions, respectively. The first value is then the standard deviation of the normal. The second is the standard deviation of \eqn{\log\sigma^2} (i.e. the \code{sdlog} argument in \code{\link[stats]{Lognormal}}). If left as NULL a mutltiple of 5 is used on the asymptotic variance covariance matrix. Importance sample weights should be examined to evaluate the appropriatness of this choice.}
 
@@ -36,6 +34,8 @@ rlImportSamp(x, y, psi, ..., scale.est = "Huber", k2 = 1.345, mu0, Sigma0,
 \item{Nins}{number of samples from the instrumental distribution}
 
 \item{maxit}{the limit on the number of IWLS iterations. Same as in \code{\link[MASS]{rlm}}}
+
+\item{...}{additional arguments to be passed to \code{psi}}
 }
 \description{
 Full model: \deqn{
@@ -43,6 +43,12 @@ Full model: \deqn{
 \sigma^2~IG(\alpha, \beta),
 y~N(X\beta, \sigma^2)
 }
-For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y)=(b(y), s(y))}.
+For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y)=(b(y), s(y))}. Current implementation allows for these to be a pair of M-estimators as implemented in \code{\link[MASS]{rlm}}
+}
+\details{
+Fill in some details
+}
+\author{
+John R. Lewis \email{lewis.865@osu.edu}
 }
 

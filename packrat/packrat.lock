@@ -5,7 +5,7 @@ Repos: CRAN=https://cran.rstudio.com/
 
 Package: BH
 Source: CRAN
-Version: 1.60.0-1
+Version: 1.60.0-2
 
 Package: MASS
 Source: CRAN
@@ -72,6 +72,11 @@ Version: 0.8
 Requires: stringr
 Hash: aac00bd789bac10970b50e3b7e0cab04
 
+Package: expm
+Source: CRAN
+Version: 0.999-0
+Hash: 5041cb96d34112f65f0d13385eded9ee
+
 Package: formatR
 Source: CRAN
 Version: 1.2.1
@@ -136,6 +141,12 @@ Package: misc3d
 Source: CRAN
 Version: 0.8-4
 Hash: 44836021ee460c4176d6e070e931f488
+
+Package: msm
+Source: CRAN
+Version: 1.6.1
+Requires: expm, mvtnorm
+Hash: 61f2a6be7715afd0430a7bb984b28632
 
 Package: multicool
 Source: CRAN

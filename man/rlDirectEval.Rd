@@ -40,7 +40,7 @@ Full model: \deqn{
 \sigma^2~IG(\alpha, \beta),
 y_1, \dots, y_n~N(\mu, \sigma^2)
 }
-For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y)=(l(y), s(y))} with the property that \eqn{l(\sigma y+\mu)=\sigma l(y)+\mu} and \eqn{s(\sigma y+\mu)=\sigma s(y)}.Current implementation allows for these to be a pair of M-estimators as implemented in \code{\link[MASS]{rlm}}
+For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y)=(l(y), s(y))} with the property that \eqn{l(\sigma y+\mu)=\sigma l(y)+\mu} and \eqn{s(\sigma y+\mu)=\sigma s(y)}. Current implementation allows for these to be a pair of M-estimators as implemented in \code{\link[MASS]{rlm}}
 }
 \details{
 Direct evaluation uses kernel density estimation with a Gaussian kernel to estimate the restricted likelihood. \code{N} specifies the number of samples of the statistics to generate for the kernel density estimate. \code{\link[ks]{hpi}} is used to specify the initial bandwidths independently for the location and the scale. These can be multiplied by \code{smooth} to 'oversmooth' or 'undersmooth' the estimate. Oversmoothing may result in more stable estimates.
@@ -59,5 +59,8 @@ fit<-rlDirectEval(y=newcomb, psi=psi.bisquare, scale.est='Huber',
 names(fit)
 plot(fit$muPost[,1],fit$muPost[,2], type='l', col=4)
 plot(fit$sigma2Post[,1],fit$sigma2Post[,2], type='l')
+}
+\author{
+John R. Lewis \email{lewis.865@osu.edu}
 }
 
