@@ -17,41 +17,45 @@
 #' @param Nins number of samples from the instrumental distribution
 #' @return list with elements \code{impSamps}, \code{w}, \code{fit}. These are the \code{Nins} by \code{length(beta)})+1} matrix of importance samples, the corresponding weights, and the fitted robust regression.
 #' @author John R. Lewis \email{lewis.865@@osu.edu}
-  #' @examples
-  #' Example using the Belgium Phone calls data
-  #' Conditioning statistics are simultaneous M-estimators of
-  #' coefficients and scale. In the example below, Tukey's
-  #' bisquare is used for the coefficients and median absolute
-  #' deviation (MAD) is used for the scale. Note the sample sizes are dramatically reduces to run quickly.
-  #' nForPrior<-3 #number of data points to use formulate prior
-  #' data(MASS::phones)
-  #' phones<-data.frame(cbind(phones$year, phones$calls))
-  #' names(phones)<-c("year", "calls")
-  #' phones$year<-phones$year-mean(phones$year) #center
-  #' phonesFit<-phones[-c(1:nForPrior),]
-  #' n<-nrow(phonesFit)
-  #' X<-cbind(rep(1, n), phonesFit$year)
-  #' y<-phonesFit$calls
-  #' phonesPrior<-phones[c(1:nForPrior),]
-  #' #formulate priors
-  #' priorFit<-lm(calls~year, data=phonesPrior)
-  #' summary(priorFit)
-  #' mu0<-coef(priorFit)
-  #' sigma2Hat<-summary(priorFit)$sigma^2
-  #' alpha<-2
-  #' beta<-(alpha-1) #sigma2Hat*(alpha-1)
-  #' # choosing how much to inlfate fitted variance covariance
-  #' matrix from the prior data fit
-  #' inflate<-10
-  #' Sigma0<-vinflate[inflate]*vcov(priorFit)
-  #' restFit<-rlImportSamp(X=X,y=y, psi=psi.bisquare, scale.est='MAD', mu0=mu0, Sigma0=Sigma0, alpha=alpha, beta=beta, smooth=1,N=1e1,Nins=1e1, maxit=10000)
-  #' plot(tst$w, cex=.1, pch=19)
-  #' plot(density(tst$impSamps[,1],weights=tst$w))
-  #' abline(v=b.obs[1], col=2)
-  #' plot(density(tst$impSamps[,2],weights=tst$w))
-  #' abline(v=b.obs[2], col=2)
-  #' plot(density(tst$impSamps[,3],weights=tst$w))
-  #' abline(v=s.obs, col=2)
+#' @examples
+#' # Example using the Belgium Phone calls data
+#' # Conditioning statistics are simultaneous M-estimators of coefficients and scale.
+#' In the example below, Tukeys bisquare is used for the coefficients and median absolute deviation (MAD) is used for the scale. Note the sample sizes are dramatically reduces to run quickly.
+#'
+#' nForPrior<-3 #number of data points to use formulate prior
+#' data(MASS::phones) #load a prepare data
+#' phones<-data.frame(cbind(phones$year, phones$calls))
+#' names(phones)<-c("year", "calls")
+#' phones$year<-phones$year-mean(phones$year) #center
+#' phonesFit<-phones[-c(1:nForPrior),]
+#' n<-nrow(phonesFit)
+#' X<-cbind(rep(1, n), phonesFit$year)
+#' y<-phonesFit$calls
+#'
+#' # formulate priors
+#' phonesPrior<-phones[c(1:nForPrior),]
+#' priorFit<-lm(calls~year, data=phonesPrior)
+#' summary(priorFit)
+#' mu0<-coef(priorFit)
+#' sigma2Hat<-summary(priorFit)$sigma^2
+#' alpha<-2
+#' beta<-(alpha-1) #sigma2Hat*(alpha-1)
+#'
+#' # choosing how much to inlfate fitted variance covariance matrix from the prior data fit
+#' inflate<-10
+#' Sigma0<-vinflate[inflate]*vcov(priorFit)
+#'
+#'  # Fit restricted likelihood model using importance sampling
+#' restFit<-rlImportSamp(X=X,y=y, psi=psi.bisquare, scale.est='MAD', mu0=mu0, Sigma0=Sigma0, alpha=alpha, beta=beta, smooth=1,N=1e1,Nins=1e1, maxit=10000)
+#'
+#' # Some plots
+#' plot(tst$w, cex=.1, pch=19)
+#' plot(density(tst$impSamps[,1],weights=tst$w))
+#' abline(v=coef(restFit$fit)[1], col=2)
+#' plot(density(tst$impSamps[,2],weights=tst$w))
+#' abline(v=coef(restFit$fit)[2], col=2)
+#' plot(density(tst$impSamps[,3],weights=tst$w))
+#' abline(v=summary(restFit$fit)$sigma, col=2)
 #' @export
 rlImportSamp<-function(X,y, psi, scale.est='Huber',k2=1.345, mu0, Sigma0, alpha, beta,instDist=NULL, sdInstDist =NULL, smooth=1,N,Nins, maxit=1000,...){
 
@@ -75,7 +79,6 @@ rlImportSamp<-function(X,y, psi, scale.est='Huber',k2=1.345, mu0, Sigma0, alpha,
   b.obs<-rlm.obs$coefficients
   s.obs<-rlm.obs$s
   log.s.obs<-log(s.obs)
-print(s.obs)
   if(!is.null(instDist)){stop('Currently instDist must be NULL')}
 
   meanInstBeta<<-b.obs
@@ -91,7 +94,7 @@ return(c(as.numeric(rlm.out$coefficients), log(as.numeric(rlm.out$s))))
 
 Y<-matrix(rnorm(N*n,0,1),nrow=N,ncol=n)
 rlm.matrix<-apply(Y,MARGIN=1, FUN=rlm.estimators)
-h<-apply(rlm.matrix,1, hpi, binned=TRUE)
+h<-apply(rlm.matrix,1, ks::hpi, binned=TRUE)
 H<-diag(smooth*h)
 
 kernel_density<-function(x1,x2){
@@ -111,7 +114,7 @@ fn.logInsLikelihood<-function(parms){
   l<-length(parms)
   betas<-parms[1:(l-1)]
   sigma2<-parms[l]
-  mvtnorm::dmvnorm(betas, mean=meanInstBeta, sigma=sigmaInstBeta, log=TRUE)+msm::dtnorm(sigma2,mean=meanInstSigma2, sd=sdInstSigma2,log=TRUE, lower=0)
+  mvtnorm::dmvnorm(betas, mean=meanInstBeta, sigma=sigmaInstBeta, log=TRUE)+dtnorm(sigma2,mean=meanInstSigma2, sd=sdInstSigma2,log=TRUE, lower=0)
 }
 
 fn.sample.instBeta<-function(){
@@ -119,7 +122,7 @@ fn.sample.instBeta<-function(){
 }
 
 fn.sample.instSigma2<-function(){
-  msm::rtnorm(Nins,mean=meanInstSigma2, sd=sdInstSigma2, lower=0)
+  rtnorm(Nins,mean=meanInstSigma2, sd=sdInstSigma2, lower=0)
 }
 
 insBetas<-fn.sample.instBeta()
