@@ -1,96 +1,11 @@
 #' Some utility functions for brlm
 
-
-#computing the estimators----
-#used in rlDirectEval
+#'Computing the Estimators for Conditions----
+#'Funtioned used to compute the location and scale estimators using the \link{rlm} function. This function is used within rlDirectEval and is not designed to be called directly (it uses several variables not in the arguments list)
+#'@parm x vector of data
 estimators<-function(x){
   out<-rlm(x~1,psi=psi, scale.est=scale.est, k2=k2,maxit=maxit)
   return(c(as.numeric(out$coefficients), log(as.numeric(out$s))))
 }
 
 
-#sampling functions from msm package that won't load for some reason ----
-# dtnorm<-function (x, mean = 0, sd = 1, lower = -Inf, upper = Inf, log = FALSE)
-# {
-#   ret <- numeric(length(x))
-#   ret[x < lower | x > upper] <- if (log)
-#     -Inf
-#   else 0
-#   ind <- x >= lower & x <= upper
-#   if (any(ind)) {
-#     denom <- pnorm(upper, mean, sd) - pnorm(lower, mean,
-#                                             sd)
-#     xtmp <- dnorm(x, mean, sd, log)
-#     if (log)
-#       xtmp <- xtmp - log(denom)
-#     else xtmp <- xtmp/denom
-#     ret[x >= lower & x <= upper] <- xtmp[ind]
-#   }
-#   ret
-# }
-#
-# rtnorm<-function (n, mean = 0, sd = 1, lower = -Inf, upper = Inf)
-# {
-#   if (length(n) > 1)
-#     n <- length(n)
-#   mean <- rep(mean, length = n)
-#   sd <- rep(sd, length = n)
-#   lower <- rep(lower, length = n)
-#   upper <- rep(upper, length = n)
-#   lower <- (lower - mean)/sd
-#   upper <- (upper - mean)/sd
-#   ind <- seq(length = n)
-#   ret <- numeric(n)
-#   alg <- ifelse(lower > upper, -1, ifelse(((lower < 0 & upper ==
-#                                               Inf) | (lower == -Inf & upper > 0) | (is.finite(lower) &
-#                                                                                       is.finite(upper) & (lower < 0) & (upper > 0) & (upper -
-#                                                                                                                                         lower > sqrt(2 * pi)))), 0, ifelse((lower >= 0 & (upper >
-#                                                                                                                                                                                             lower + 2 * sqrt(exp(1))/(lower + sqrt(lower^2 + 4)) *
-#                                                                                                                                                                                             exp((lower * 2 - lower * sqrt(lower^2 + 4))/4))),
-#                                                                                                                                                                            1, ifelse(upper <= 0 & (-lower > -upper + 2 * sqrt(exp(1))/(-upper +
-#                                                                                                                                                                                                                                          sqrt(upper^2 + 4)) * exp((upper * 2 - -upper * sqrt(upper^2 +
-#                                                                                                                                                                                                                                                                                                4))/4)), 2, 3))))
-#   ind.nan <- ind[alg == -1]
-#   ind.no <- ind[alg == 0]
-#   ind.expl <- ind[alg == 1]
-#   ind.expu <- ind[alg == 2]
-#   ind.u <- ind[alg == 3]
-#   ret[ind.nan] <- NaN
-#   while (length(ind.no) > 0) {
-#     y <- rnorm(length(ind.no))
-#     done <- which(y >= lower[ind.no] & y <= upper[ind.no])
-#     ret[ind.no[done]] <- y[done]
-#     ind.no <- setdiff(ind.no, ind.no[done])
-#   }
-#   stopifnot(length(ind.no) == 0)
-#   while (length(ind.expl) > 0) {
-#     a <- (lower[ind.expl] + sqrt(lower[ind.expl]^2 + 4))/2
-#     z <- rexp(length(ind.expl), a) + lower[ind.expl]
-#     u <- runif(length(ind.expl))
-#     done <- which((u <= exp(-(z - a)^2/2)) & (z <= upper[ind.expl]))
-#     ret[ind.expl[done]] <- z[done]
-#     ind.expl <- setdiff(ind.expl, ind.expl[done])
-#   }
-#   stopifnot(length(ind.expl) == 0)
-#   while (length(ind.expu) > 0) {
-#     a <- (-upper[ind.expu] + sqrt(upper[ind.expu]^2 + 4))/2
-#     z <- rexp(length(ind.expu), a) - upper[ind.expu]
-#     u <- runif(length(ind.expu))
-#     done <- which((u <= exp(-(z - a)^2/2)) & (z <= -lower[ind.expu]))
-#     ret[ind.expu[done]] <- -z[done]
-#     ind.expu <- setdiff(ind.expu, ind.expu[done])
-#   }
-#   stopifnot(length(ind.expu) == 0)
-#   while (length(ind.u) > 0) {
-#     z <- runif(length(ind.u), lower[ind.u], upper[ind.u])
-#     rho <- ifelse(lower[ind.u] > 0, exp((lower[ind.u]^2 -
-#                                            z^2)/2), ifelse(upper[ind.u] < 0, exp((upper[ind.u]^2 -
-#                                                                                     z^2)/2), exp(-z^2/2)))
-#     u <- runif(length(ind.u))
-#     done <- which(u <= rho)
-#     ret[ind.u[done]] <- z[done]
-#     ind.u <- setdiff(ind.u, ind.u[done])
-#   }
-#   stopifnot(length(ind.u) == 0)
-#   ret * sd + mean
-# }

@@ -2,11 +2,15 @@
 % Please edit documentation in R/utility.R
 \name{estimators}
 \alias{estimators}
-\title{Some utility functions for brlm}
+\title{Some utility functions for brlm
+Computing the Estimators for Conditions----
+Funtioned used to compute the location and scale estimators using the \link{rlm} function. This function is used within rlDirectEval and is not designed to be called directly (it uses several variables not in the arguments list)}
 \usage{
 estimators(x)
 }
 \description{
 Some utility functions for brlm
+Computing the Estimators for Conditions----
+Funtioned used to compute the location and scale estimators using the \link{rlm} function. This function is used within rlDirectEval and is not designed to be called directly (it uses several variables not in the arguments list)
 }
 

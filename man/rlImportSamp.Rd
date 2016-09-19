@@ -35,7 +35,7 @@ rlImportSamp(X, y, psi, scale.est = "Huber", k2 = 1.345, mu0, Sigma0, alpha,
 
 \item{maxit}{the limit on the number of IWLS iterations. Same as in \code{\link[MASS]{rlm}}}
 
-\item{...}{additional arguments to be passed to \code{psi}}
+\item{...}{arguments to pass to the psi functions}
 }
 \description{
 Full model: \deqn{

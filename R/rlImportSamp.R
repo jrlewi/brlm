@@ -15,6 +15,7 @@
 #' @param instDist Placeholder to allow for more user specific instrumental distributions. Currently not used.
 #' @param sdInstDist Vector of length 2 defining the scale for the instrumental distribution when instDist=NULL. In this case, the instrumental distribution for \eqn{\mu} and \eqn{\sigma^2} are independent normal and log normal distributions, respectively. The first value is then the standard deviation of the normal. The second is the standard deviation of \eqn{\log\sigma^2} (i.e. the \code{sdlog} argument in \code{\link[stats]{Lognormal}}). If left as NULL a mutltiple of 5 is used on the asymptotic variance covariance matrix. Importance sample weights should be examined to evaluate the appropriatness of this choice.
 #' @param Nins number of samples from the instrumental distribution
+#' @param ... arguments to pass to the psi functions
 #' @return list with elements \code{impSamps}, \code{w}, \code{fit}. These are the \code{Nins} by \code{length(beta)})+1} matrix of importance samples, the corresponding weights, and the fitted robust regression.
 #' @author John R. Lewis \email{lewis.865@@osu.edu}
 #' @examples
