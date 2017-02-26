@@ -1,0 +1,118 @@
+---
+title: "brlm: R package for fitting Bayesian Restricted Likelihood Models"
+author: "John R. Lewis"
+date: "`r Sys.Date()`"
+output: 
+ rmarkdown::html_vignette:
+    toc: true
+    toc_depth: 2
+vignette: >
+  \VignetteIndexEntry{brlm: R package for fitting Bayesian Restricted Likelihood Models}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r setup, echo=FALSE, include=FALSE}
+require(brlm)
+require(ggplot2)
+require(MASS)
+require(ks)
+```
+
+# Introduction
+This vignette will provide some examples of using the package `brlm` to fit some Bayesian restricted likelihood models. In short, these are Bayesian models where the posterior is conditioned on a summary statistic of the data. We call this the "Restricted Posterior" and it is denoted $\pi(\theta|T(y))$. The full (or traditional) posterior conditions on the entirety of the data, denoted 
+$\pi(\theta|y)$. One of the main reasons why the restricted posterior could be useful is when there are outliers in the data set that do not inform $\theta$. $T(y)$ is chosen to be a robust statistics in these cases. The package currently supports conditioning on a set of order statistics as well as some common M-estimators. Other reasons for the use of the restricted posterior and theoretical details behind fitting these models are provided in:
+
+1. [My Dissertation](https://etd.ohiolink.edu/!etd.send_file?accession=osu1407505392&disposition=inline)
+2. [A Technical Report/Working Paper](http://www.stat.osu.edu/~yklee/mss/tr878.pdf)
+3. [A 2012 JSM Proceedings Paper ](http://www.stat.osu.edu/~yklee/mss/JSM2012_proceedings.pdf). The method was referred to as 'The Blended Paradigm' in this early work. 
+
+
+
+# Conditioning on Order Statistics
+One of the very first restricted posteriors we worked with uses $T(y)$ to be a set of middling order statistics. For example - take the full Bayesian model to be the standard normal theory location-scale model:
+$$\sigma^2\sim IG(\alpha, \beta)$$
+$$\mu\sim N(\eta, \tau^2)$$
+$$y_1, y_2, \dots, y_n\sim N(\mu, \sigma^2)$$
+The full posterior, $\pi(\theta|\mathbf{y})$ conditions on $\mathbf{y}=(y_1, y_2, \dots, y_n)$ where $\theta=(\mu, \sigma^2)$. Note that here we are assuming all other hyperparameters are fixed. The function `fitOrderStat` fits the restricted posterior $\pi(\theta|T(\mathbf{y}))$ where $T(\mathbf{y})$ is a middle set of order statistics: $T(\mathbf{y})=(y_{(k+1)},y_{(k+2)}, \dots, y_{(n-k)})$.
+
+Since the pdf of the order statistics can be written down explicitly, fitting the restricted posterior is rather straightforward and can be done in a number of ways. Since we are assuming the hyperparameters are fixed so that the dimension of $\theta$ is only 2, `fitOrderStat` fits the restricted posterior on a grid of $\mu$ and $\sigma^2$. A Markov chain Monte Carlo (MCMC) Gibbs Sampler would be rather straightforward to implement since the likelihood is known explicitly. This would be useful if the  model were extended to include priors for the hyperparameters.
+
+As an example, consider the following data sample from a mixture of normals both centered at $\mu=0$ but with a proportion $p=.2$ have an order of magnitude larger variance:
+
+```{r generate data, fig.height=5, fig.width=7}
+set.seed(1)
+n<-100; p<-.2; mu<-0;sigma<-1; c<-10
+bin<-rbinom(n,1, p)
+y<-sapply(bin, function(x) ifelse(x, rnorm(1, mu, sqrt(c)*sigma), rnorm(1, mu,sigma)))
+y<-data.frame(samples=y)
+ggplot(data=y, aes(samples, ..density..))+geom_histogram(col=1)
+```
+
+We can fit both the full model and the restricted model with `fitOrderStat`
+
+```{r order stat model, cache=TRUE}
+eta<-5
+tau<-4 
+alpha<-5
+beta<-5
+k<-15
+mu_lims=c(-3,3)
+length_mu=300
+sigma2_lims=c(0.01, 20)
+length_sigma2=300
+fit_full<-fitOrderStat(y=y$samples,k=0, mu_lims=mu_lims,length_mu=length_mu, sigma2_lims=sigma2_lims,length_sigma2=length_sigma2, eta=eta, tau=tau, alpha=alpha, beta=beta)
+
+fit_restricted<-fitOrderStat(y=y$samples,k=k, mu_lims=mu_lims,length_mu=length_mu, sigma2_lims=sigma2_lims,length_sigma2=length_sigma2,eta=eta, tau=tau, alpha=alpha, beta=beta)
+```
+
+
+For illustration we set $\eta=$ `r eta`,$\tau=$`r tau`, $\alpha=$ `r alpha`, and $\beta=$ `r beta`. This means that the prior for $\mu$ is slightly offset from its true value. For the restricted posterior we take $k=$ `r k`. Taking a look at the output of the function, we can easily plot the marginal posteriors for $\mu$ under both the restricted and full models. 
+
+```{r plot order results, fig.height=5, fig.width=7}
+names(fit_restricted)
+colnames(fit_restricted$muPost)
+full_mu<-data.frame(fit_full$muPost, fit="full")
+rest_mu<-data.frame(fit_restricted$muPost, fit="restricted")
+mu_post<-rbind(full_mu, rest_mu)
+den_plot<-ggplot(data=mu_post)+
+  geom_line( aes(x=mu, y=posterior, col=fit), lwd=1.25)+
+  xlim(c(-1,1)) #note - this will throw an error due to values being removed, but thats okay :)
+den_plot
+```
+
+We can see more precise inference on $\mu$ under the restricted posterior. See [our JSM Proceedings Paper](http://www.stat.osu.edu/~yklee/mss/JSM2012_proceedings.pdf) for a more extensive simulation study showing the advantage of the restricted likelihood approach in this situation. Of course the analyst must choose $k$ appropriately. Implementing the function also involves defining the grid to be fine enough over the range of posterior mass using inputs `mu_lims, length_mu, sigma2_lims,length_sigma2`. 
+
+# Fitting Restricted Posteiors using Direct Evaluation and Importance Sampling
+
+Conditioning on order statistics is rather easy since the pdf of order statistics is know in closed form. The pdf of other statistics are not necessarily known in closed form. The `brlm` package is currently set up to condition on M-estimators, but the ideas on restricted posteriors could certaintly be extended. In this section we show how to use the package to fit restricted posteriors conditioned on M-estimators in low dimensional setting. Two approaches are available 1) direct evaluation and 2) using importance sampling. The details for these are given in Chapter 4 of [My Dissertation](https://etd.ohiolink.edu/!etd.send_file?accession=osu1407505392&disposition=inline). 
+
+## Huber's Speed of Light Data
+  We use Huber's well known speed of light data for the first demonstration. The same normal theory location-scale model as above is used.
+```{r plot Necomb data, fig.height=7, fig.width=5}
+ggplot(data=data.frame(newcomb=newcomb), aes(newcomb,..density..))+geom_histogram(col=1)
+```
+  
+```{r fit Newcomb data, cache=TRUE}
+set.seed(1) # for reproducibility,
+newcomb_tukey_direct<-rlDirectEval(y=newcomb, psi=psi.bisquare, scale.est='Huber',eta=23.6, tau=2.04, alpha=5, beta=10, mu_lims=c(20,32),
+sigma2_lims=c(0.001,100), length_mu=300, length_sigma2=300,
+N=1e4)
+
+newcomb_tukey_imp<-rlImportSamp(X=rep(1, length(newcomb)),y=newcomb, psi=psi.bisquare, scale.est='Huber', mu0=23.6, Sigma0=matrix(2.04^2,1,1), alpha=5, beta=10,N=1e4,Nins=1e4)
+```
+`rlDirectEval` uses the direct sampling method and is only available for the location-scale normal theory model above. `rlImportSamp` uses the importance sampling method. The inputs are slightly different as it is set up for the linear regression extension to the location-scale model. `psi` defines the location estimator. Here it is set to `psi.bisquare` which is Tukey's bisquare `psi` function from the `MASS` package. The user can create their own `psi` function in the formate discribed in the help page to `MASS::rlm`. `scale.est` is set to `Huber` - Huber's proposal 2 estimator (can also be specified with `proposal 2`. The other option is median absolute deviation specified by `MAD`. `N` is the number of samples to use for the kernel density estimation of the restricted likelihood (i.e. the pdf of the conditioning statistics) used in both methods and `Nins` is the number of importance samples. The computation time depends heavily on these values, but they should be chosen large enough to achieve convergence of the posterior estimates. Plots of the marginal density of $\mu$ and $\sigma^2$ can be displayed as follows
+
+```{r plot Necomb results, fig.height=7, fig.width=5}
+names(newcomb_tukey_direct) 
+names(newcomb_tukey_imp) 
+plot(newcomb_tukey_direct$muPost[,1],newcomb_tukey_direct$muPost[,2], type='l', col=4, ylab='Density', xlab=expression(mu), main='')
+lines(density(newcomb_tukey_imp$impSamps[,1], weights=newcomb_tukey_imp$w), col=5)
+grid()
+plot(newcomb_tukey_direct$sigma2Post[,1],newcomb_tukey_direct$sigma2Post[,2], type='l', ylab='Density', xlab=expression(sigma^2), main='')
+lines(density(newcomb_tukey_imp$impSamps[,2], weights=newcomb_tukey_imp$w), col=5)
+grid()
+```
+
+We see good agreement between the two methods - as we should expect. The agreement could improve further by using a finer grid, increasing `N` or `Nins`. 
+
+## Belgium Call Data

@@ -30,7 +30,7 @@
   #' set.seed(1) # for reproducibility,
   #'  # length_mu, length_sigma2, N should be larger in reality -
   #'  # they are small so the example runs quickly
-  #' y<-data(MASS::newcomb)
+  #' y<-data(newcomb)
   #' fit<-rlDirectEval(y=newcomb, psi=psi.bisquare, scale.est='Huber',
   #'    eta=23.6, tau=2.04, alpha=5, beta=10, mu_lims=c(20,32),
   #'    sigma2_lims=c(0.001,100), length_mu=20, length_sigma2=20,

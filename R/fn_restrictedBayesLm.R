@@ -1,16 +1,17 @@
-#' MCMC algorithm for Restricted LikelihoodBayesian Linear Model
+#' MCMC algorithm for Restricted Likelihood Bayesian Linear Model
 #'
 #' Fits the linear regression model
 #' \eqn{\beta~N(\mu_0, \Sigma_0)},
 #' \eqn{\sigma^2~IG(a0, b0)},
 #' \eqn{y~N(X\beta, \sigma^2 I)}
 #'
-#' Uses Gibbs sampling to sample from the posterior under the above linear regression model.
+#' Uses Gibbs sampling to sample from the restricted posterior under the above linear regression model conditioned on estimators \code{regEst} and \code{scaleEst} for \eqn{\beta} and \eqn{\sigma}, respectively. This is just the Gibbs sampler for the full posterior (implemented in \code{brlm::bayesLm} augmented with a step to sample new data given all of the parameters and the observed conditioning statistics
+#'
 #'
 #' @inheritParams bayesLm
-#' @param regEst The estimator of \eqn{\beta}  to condition on. Current options available are \code{Huber} and \code{Tukey} for Huber's and Tukey's (bisquare) estimators respectively.
+#' @param regEst The estimator of \eqn{\beta}  to condition on. Current options available are \code{Huber} and \code{Tukey} for Huber's and Tukey's (bisquare) estimators, respectively.
 #' @param scaleEst The estimator of \eqn{\sigma} to condition on. Currently Huber's proposal 2 is the only option available. Specified with \code{Huber}.
-#' @param maxit maximum number of iteration for use in \code{\link[MASS]{rlm}} when computing conditioning statistic during each proposal within the MCMC step for [y | rest, observed statistics]
+#' @param maxit maximum number of iterations for use in \code{\link[MASS]{rlm}} when computing conditioning statistic during each proposal within the MCMC step for [y | rest, observed statistics]
 #' @return list with mcmc sample, mean fitted values, robust regression object from \code{rlm}, and observed conditioning statistics.
 #' @export
 restrictedBayesLm<-function(y, X,regEst='Huber',scaleEst='Huber',mu0, Sigma0, a0, b0,sigma2Int, nkeep=1e4, nburn=1e3, maxit=400){
@@ -62,10 +63,10 @@ restrictedBayesLm<-function(y, X,regEst='Huber',scaleEst='Huber',mu0, Sigma0, a0
   s1obs<-robust$s
 
   #################################
-  #Sampling Functions for Gibbs Sampler. Those unique to the restricted sampling are in the source code
+  #Sampling Functions for Gibbs Sampler.
   #################################
   #[sigma^2|---]=IG(a0+n/2, b0+.5*t(Y-Xbeta)(Y-Xbeta))
-  #beta|----]=N(mun, Lambdan)
+  #[beta|----]=N(mun, Lambdan)
   #mun=Lambdan%*%(t(X)%*%Y+Sigma0^-1mu0)/sigma^2
   #Lambdan=sigma^2(t(X%*%X)+Sigma0^-1)^-1; (t(X%*%X)+Sigma0^-1)^-1=varCov_0
 
@@ -115,6 +116,5 @@ restrictedBayesLm<-function(y, X,regEst='Huber',scaleEst='Huber',mu0, Sigma0, a0
   out$robust<-robust
   out$coef<-l1obs
   out$s<-s1obs
-
   out
 }

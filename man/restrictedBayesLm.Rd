@@ -2,7 +2,7 @@
 % Please edit documentation in R/fn_restrictedBayesLm.R
 \name{restrictedBayesLm}
 \alias{restrictedBayesLm}
-\title{MCMC algorithm for Restricted LikelihoodBayesian Linear Model}
+\title{MCMC algorithm for Restricted Likelihood Bayesian Linear Model}
 \usage{
 restrictedBayesLm(y, X, regEst = "Huber", scaleEst = "Huber", mu0, Sigma0,
   a0, b0, sigma2Int, nkeep = 10000, nburn = 1000, maxit = 400)
@@ -12,7 +12,7 @@ restrictedBayesLm(y, X, regEst = "Huber", scaleEst = "Huber", mu0, Sigma0,
 
 \item{X}{design matrix for regression. If intercept is desired, a column of 1's is needed}
 
-\item{regEst}{The estimator of \eqn{\beta}  to condition on. Current options available are \code{Huber} and \code{Tukey} for Huber's and Tukey's (bisquare) estimators respectively.}
+\item{regEst}{The estimator of \eqn{\beta}  to condition on. Current options available are \code{Huber} and \code{Tukey} for Huber's and Tukey's (bisquare) estimators, respectively.}
 
 \item{scaleEst}{The estimator of \eqn{\sigma} to condition on. Currently Huber's proposal 2 is the only option available. Specified with \code{Huber}.}
 
@@ -28,7 +28,7 @@ restrictedBayesLm(y, X, regEst = "Huber", scaleEst = "Huber", mu0, Sigma0,
 
 \item{nburn}{number of iterations to toss}
 
-\item{maxit}{maximum number of iteration for use in \code{\link[MASS]{rlm}} when computing conditioning statistic during each proposal within the MCMC step for [y | rest, observed statistics]}
+\item{maxit}{maximum number of iterations for use in \code{\link[MASS]{rlm}} when computing conditioning statistic during each proposal within the MCMC step for [y | rest, observed statistics]}
 }
 \value{
 list with mcmc sample, mean fitted values, robust regression object from \code{rlm}, and observed conditioning statistics.
@@ -40,6 +40,6 @@ Fits the linear regression model
 \eqn{y~N(X\beta, \sigma^2 I)}
 }
 \details{
-Uses Gibbs sampling to sample from the posterior under the above linear regression model.
+Uses Gibbs sampling to sample from the restricted posterior under the above linear regression model conditioned on estimators \code{regEst} and \code{scaleEst} for \eqn{\beta} and \eqn{\sigma}, respectively. This is just the Gibbs sampler for the full posterior (implemented in \code{brlm::bayesLm} augmented with a step to sample new data given all of the parameters and the observed conditioning statistics
 }
 

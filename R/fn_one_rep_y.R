@@ -11,11 +11,11 @@
 #'@param proj the projection matrix onto the deviation space (aka the least squares residual space)
 #'@param fn.psi custom psi function returning psi(x) or psi'(x) defining M-estimator for location ; default is fn.psi.huber
 #'@param fn.chi custom chi function returning chi(x) or chi'(x) defining M-estimator for scale; default (and currently only capability) is fn.chi.prop2
-#'@param psi psi function returning psi(x)/x. Must match fn.spi
+#'@param psi psi function returning psi(x)/x. Must match fn.spi, but currently no warning is thrown.
 #'@param scaleEst 'Huber' (default and currently only capability).
 #'@param maxit max iterations for the estimation of the summary statistics
 #' @return list y.curr: the new (if accepted) or same (if rejected) data vector, a: indicator of acceptance of proposed value 1 if accepted, 0 if rejected, log.prop.den.curr: proposal density on log scale of the returned data vector, rat: MH ratio, log.rat1: log ratio of proposal densities
-
+#' @export
 fn.one.rep.y<-function(y.curr,Beta,sig,l1obs, s1obs,X, log.prop.den.curr, proj,fn.psi,fn.chi,psi, scaleEst,maxit=400)
 {
   n<-length(y.curr)
@@ -40,7 +40,8 @@ fn.one.rep.y<-function(y.curr,Beta,sig,l1obs, s1obs,X, log.prop.den.curr, proj,f
 
 #' @rdname fn.one.rep.y
 #' @inheritParams fn.attenuation2
-#'@details Two equivalent versions, the second uses \code{fn.attenuation2} and is faster. This function is designed for use within an MCMC sampler. Many of the inputs are iteration dependent. The input \code{log.prop.den.curr} is designed as a time saver. Since this is free of other parameters it can be saved from iteration to iteration to save computation time. Note the use of both fn.psi (custome in the \link{brlm} package) and psi (from the \link{MASS} package). This is poor coding and should be corrected.
+#'@details Two equivalent versions, the second uses \code{fn.attenuation2} and is faster. This function is designed for use within an MCMC sampler. Many of the inputs are iteration dependent. The input \code{log.prop.den.curr} is designed as a time saver. Since this is free of other parameters it can be saved from iteration to iteration to save computation time. Note the use of both fn.psi (custom in the \link{brlm} package) and psi (from the \link{MASS} package). This is poor coding and should be corrected.
+#'@export
 fn.one.rep.y2<-function(y.curr,Beta,sig,l1obs, s1obs,X, log.prop.den.curr, proj, Qt,fn.psi,fn.chi,psi, scaleEst,maxit=400)
 {
   n<-length(y.curr)

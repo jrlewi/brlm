@@ -32,7 +32,7 @@ fn.one.rep.y2(y.curr, Beta, sig, l1obs, s1obs, X, log.prop.den.curr, proj, Qt,
 
 \item{fn.chi}{custom chi function returning chi(x) or chi'(x) defining M-estimator for scale; default (and currently only capability) is fn.chi.prop2}
 
-\item{psi}{psi function returning psi(x)/x. Must match fn.spi}
+\item{psi}{psi function returning psi(x)/x. Must match fn.spi, but currently no warning is thrown.}
 
 \item{scaleEst}{'Huber' (default and currently only capability).}
 
@@ -47,6 +47,6 @@ list y.curr: the new (if accepted) or same (if rejected) data vector, a: indicat
 Performs a single Metropolis-Hastings step for the restricted likelihood method
 }
 \details{
-Two equivalent versions, the second uses \code{fn.attenuation2} and is faster. This function is designed for use within an MCMC sampler. Many of the inputs are iteration dependent. The input \code{log.prop.den.curr} is designed as a time saver. Since this is free of other parameters it can be saved from iteration to iteration to save computation time. Note the use of both fn.psi (custome in the \link{brlm} package) and psi (from the \link{MASS} package). This is poor coding and should be corrected.
+Two equivalent versions, the second uses \code{fn.attenuation2} and is faster. This function is designed for use within an MCMC sampler. Many of the inputs are iteration dependent. The input \code{log.prop.den.curr} is designed as a time saver. Since this is free of other parameters it can be saved from iteration to iteration to save computation time. Note the use of both fn.psi (custom in the \link{brlm} package) and psi (from the \link{MASS} package). This is poor coding and should be corrected.
 }
 

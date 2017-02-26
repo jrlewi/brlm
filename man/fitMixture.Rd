@@ -2,7 +2,7 @@
 % Please edit documentation in R/fitMixture.R
 \name{fitMixture}
 \alias{fitMixture}
-\title{A standard Bayesian mixture model using a mixture of normal distributions for the likelihood.}
+\title{A standard Bayesian mixture model for outliers using a mixture of two normal distributions for the likelihood.}
 \usage{
 fitMixture(y, theta.lims, length.theta, sigma2.lims, length.sigma2, mu, tau,
   alpha, beta, p, c)

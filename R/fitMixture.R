@@ -1,4 +1,4 @@
-#' A standard Bayesian mixture model using a mixture of normal distributions for the likelihood.
+#' A standard Bayesian mixture model for outliers using a mixture of two normal distributions for the likelihood.
 #'
 #' Fiting the following mixture model: \deqn{
 #' \theta\sim N(\mu, \tau^2),

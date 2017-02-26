@@ -8,7 +8,6 @@
 #' }
 #' For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y)=(b(y), s(y))}. Current implementation allows for these to be a pair of M-estimators as implemented in \code{\link[MASS]{rlm}}
 #'
-#' Fill in some details
 #'
 #' @inheritParams rlDirectEval
 #' @param X	a matrix or data frame containing the explanatory variables. The matrix should include a vector of 1's if intercept is desired.
