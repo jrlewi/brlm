@@ -56,10 +56,10 @@ tau<-4
 alpha<-5
 beta<-5
 k<-15
-mu_lims=c(-3,3)
-length_mu=300
-sigma2_lims=c(0.01, 20)
-length_sigma2=300
+mu_lims<-c(-3,3)
+length_mu<-300
+sigma2_lims<-c(0.01, 20)
+length_sigma2<-300
 fit_full<-fitOrderStat(y=y$samples,k=0, mu_lims=mu_lims,length_mu=length_mu, sigma2_lims=sigma2_lims,length_sigma2=length_sigma2, eta=eta, tau=tau, alpha=alpha, beta=beta)
 
 fit_restricted<-fitOrderStat(y=y$samples,k=k, mu_lims=mu_lims,length_mu=length_mu, sigma2_lims=sigma2_lims,length_sigma2=length_sigma2,eta=eta, tau=tau, alpha=alpha, beta=beta)
@@ -88,7 +88,7 @@ Conditioning on order statistics is rather easy since the pdf of order statistic
 
 ## Huber's Speed of Light Data
   We use Huber's well known speed of light data for the first demonstration. The same normal theory location-scale model as above is used.
-```{r plot Necomb data, fig.height=7, fig.width=5}
+```{r plot Necomb data, fig.height=5, fig.width=7}
 ggplot(data=data.frame(newcomb=newcomb), aes(newcomb,..density..))+geom_histogram(col=1)
 ```
   
@@ -102,7 +102,7 @@ newcomb_tukey_imp<-rlImportSamp(X=rep(1, length(newcomb)),y=newcomb, psi=psi.bis
 ```
 `rlDirectEval` uses the direct sampling method and is only available for the location-scale normal theory model above. `rlImportSamp` uses the importance sampling method. The inputs are slightly different as it is set up for the linear regression extension to the location-scale model. `psi` defines the location estimator. Here it is set to `psi.bisquare` which is Tukey's bisquare `psi` function from the `MASS` package. The user can create their own `psi` function in the formate discribed in the help page to `MASS::rlm`. `scale.est` is set to `Huber` - Huber's proposal 2 estimator (can also be specified with `proposal 2`. The other option is median absolute deviation specified by `MAD`. `N` is the number of samples to use for the kernel density estimation of the restricted likelihood (i.e. the pdf of the conditioning statistics) used in both methods and `Nins` is the number of importance samples. The computation time depends heavily on these values, but they should be chosen large enough to achieve convergence of the posterior estimates. Plots of the marginal density of $\mu$ and $\sigma^2$ can be displayed as follows
 
-```{r plot Necomb results, fig.height=7, fig.width=5}
+```{r plot Necomb results, fig.height=5, fig.width=7}
 names(newcomb_tukey_direct) 
 names(newcomb_tukey_imp) 
 plot(newcomb_tukey_direct$muPost[,1],newcomb_tukey_direct$muPost[,2], type='l', col=4, ylab='Density', xlab=expression(mu), main='')
