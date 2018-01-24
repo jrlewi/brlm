@@ -49,12 +49,12 @@
 #' restFit<-rlImportSamp(X=X,y=y, psi=psi.bisquare, scale.est='MAD', mu0=mu0, Sigma0=Sigma0, alpha=alpha, beta=beta, smooth=1,N=1e1,Nins=1e1, maxit=10000)
 #'
 #' # Some plots
-#' plot(tst$w, cex=.1, pch=19)
-#' plot(density(tst$impSamps[,1],weights=tst$w))
+#' plot(restFit$w, cex=.1, pch=19)
+#' plot(density(restFit$impSamps[,1],weights=restFit$w))
 #' abline(v=coef(restFit$fit)[1], col=2)
-#' plot(density(tst$impSamps[,2],weights=tst$w))
+#' plot(density(restFit$impSamps[,2],weights=restFit$w))
 #' abline(v=coef(restFit$fit)[2], col=2)
-#' plot(density(tst$impSamps[,3],weights=tst$w))
+#' plot(density(restFit$impSamps[,3],weights=restFit$w))
 #' abline(v=summary(restFit$fit)$sigma, col=2)
 #' @export
 rlImportSamp<-function(X,y, psi, scale.est='Huber',k2=1.345, mu0, Sigma0, alpha, beta,instDist=NULL, sdInstDist =NULL, smooth=1,N,Nins, maxit=1000,...){
