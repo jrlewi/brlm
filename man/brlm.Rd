@@ -8,4 +8,3 @@
 \description{
 brlm: A package for implementing Bayesian Restricted Likelihood Methods.
 }
-

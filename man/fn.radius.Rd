@@ -25,4 +25,3 @@ Compute the radius in deviation space
 \details{
 Two equivalent ways to calculate radius in deviation space. The second uses the  projection matrix onto the deviation space as an argument is a bit quicker.
 }
-

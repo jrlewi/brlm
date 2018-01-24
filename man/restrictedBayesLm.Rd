@@ -42,4 +42,3 @@ Fits the linear regression model
 \details{
 Uses Gibbs sampling to sample from the restricted posterior under the above linear regression model conditioned on estimators \code{regEst} and \code{scaleEst} for \eqn{\beta} and \eqn{\sigma}, respectively. This is just the Gibbs sampler for the full posterior (implemented in \code{brlm::bayesLm} augmented with a step to sample new data given all of the parameters and the observed conditioning statistics
 }
-

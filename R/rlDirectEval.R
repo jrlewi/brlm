@@ -1,5 +1,6 @@
 #' Fitting restricted likelihood location-scale model using direct evaluation.
 #'
+#' Deprecated - use \code{rl_direct}
 #' Full model: \deqn{
 #' \mu~N(\eta, \tau^2),
 #' \sigma^2~IG(\alpha, \beta),
@@ -38,7 +39,7 @@
   #' names(fit)
   #' plot(fit$muPost[,1],fit$muPost[,2], type='l', col=4)
   #' plot(fit$sigma2Post[,1],fit$sigma2Post[,2], type='l')
-#'@export
+#' @export
 rlDirectEval<-function(y, psi,..., scale.est='Huber',k2=1.345, eta, tau, alpha, beta, mu_lims, sigma2_lims,length_mu, length_sigma2, smooth=1,N, maxit=1000){
 
 
@@ -87,14 +88,14 @@ estimators<-function(x){
 
 X<-matrix(rnorm(N*n,0,1),nrow=N,ncol=n) #each row is a sample from N(0,1)
 est.matrix<-apply(X,MARGIN=1, FUN=estimators)
-h1<-hpi(est.matrix[1,], binned=TRUE)
-h2<-hpi(est.matrix[2,], binned=TRUE)
+h1<-ks::hpi(est.matrix[1,], binned=TRUE)
+h2<-ks::hpi(est.matrix[2,], binned=TRUE)
 H<-diag(smooth*c(h1,h2))
 
 #kd function using H as the bandwidth and est.matrix as the data
 #using Guassian Kernel
 kernel_density<-function(x1,x2, H){
-  mean(dmvnorm(t(est.matrix),mean=c(x1,x2),sigma=H^2))
+  mean(mvtnorm::dmvnorm(t(est.matrix),mean=c(x1,x2),sigma=H^2))
 }
 
 #unormalized posterior estimate function: estimates the posterior (unormalized) on the log scale

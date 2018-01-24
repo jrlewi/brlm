@@ -38,4 +38,3 @@ Fit is done a grid of \eqn{\mu} and \eqn{\sigma^2} using Riemann sum numerical i
 \seealso{
 \code{\link{fitMixture}}
 }
-

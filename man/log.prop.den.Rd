@@ -39,4 +39,3 @@ Computes proposal density by computing the necessary Jacobian of the transformat
 \details{
 Designed for use within \code{fn.one.rep.y}. Two equivalent versions, the second uses \code{fn.attenuation2} and is faster.
 }
-

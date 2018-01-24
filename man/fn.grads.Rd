@@ -20,4 +20,3 @@ fn.grads(y, X, l1obs, s1obs, fn.psi = fn.psi.huber, fn.chi = fn.chi.prop2)
 \description{
 Computes the gradients in the linear regression MCMC
 }
-

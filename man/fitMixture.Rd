@@ -35,4 +35,3 @@ This implementation is fit on a grid of \eqn{\theta} and \eqn{\sigma^2} using Ri
 \seealso{
 \code{\link{fitOrderStat}}
 }
-

@@ -43,4 +43,3 @@ Fits the heavy-tailed linear regression model
 \details{
 Uses Gibbs sampling to sample from the posterior under the above linear regression model. This model is equivalent to a linear regression with t-distributed errors.
 }
-

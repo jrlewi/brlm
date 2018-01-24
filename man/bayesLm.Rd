@@ -37,4 +37,3 @@ Fits the linear regression model
 \details{
 Uses Gibbs sampling to sample from the posterior under the above linear regression model.
 }
-

@@ -45,9 +45,6 @@ y~N(X\beta, \sigma^2)
 }
 For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y)=(b(y), s(y))}. Current implementation allows for these to be a pair of M-estimators as implemented in \code{\link[MASS]{rlm}}
 }
-\details{
-Fill in some details
-}
 \examples{
 # Example using the Belgium Phone calls data
 # Conditioning statistics are simultaneous M-estimators of coefficients and scale.
@@ -91,4 +88,3 @@ abline(v=summary(restFit$fit)$sigma, col=2)
 \author{
 John R. Lewis \email{lewis.865@osu.edu}
 }
-

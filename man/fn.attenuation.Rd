@@ -35,4 +35,3 @@ Compute the attenuation factor of the Jacobian in the restricted likelihood MCMC
 \details{
 Two equivalent functions computing the attenuation piece. The second one uses the transpose of the orthonormalized \code{X} as an input. This makes it somewhat quicker.
 }
-

@@ -28,4 +28,3 @@ ystst a data vector such that T(ystst)=T(y_obs)
 Compute y**
 Computes y** from a proposed y* value
 }
-

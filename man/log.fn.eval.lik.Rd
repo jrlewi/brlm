@@ -24,4 +24,3 @@ Full likelihood under Gaussian model
 \details{
 designed for use within \code{fn.one.rep.y}
 }
-

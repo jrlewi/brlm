@@ -49,4 +49,3 @@ Performs a single Metropolis-Hastings step for the restricted likelihood method
 \details{
 Two equivalent versions, the second uses \code{fn.attenuation2} and is faster. This function is designed for use within an MCMC sampler. Many of the inputs are iteration dependent. The input \code{log.prop.den.curr} is designed as a time saver. Since this is free of other parameters it can be saved from iteration to iteration to save computation time. Note the use of both fn.psi (custom in the \link{brlm} package) and psi (from the \link{MASS} package). This is poor coding and should be corrected.
 }
-

@@ -35,6 +35,7 @@ rlDirectEval(y, psi, ..., scale.est = "Huber", k2 = 1.345, eta, tau, alpha,
 A list of length 4: the joint posterior, the two marginals, and the bandwidths used for the kernel density estimate
 }
 \description{
+Deprecated - use \code{rl_direct}
 Full model: \deqn{
 \mu~N(\eta, \tau^2),
 \sigma^2~IG(\alpha, \beta),
@@ -63,4 +64,3 @@ plot(fit$sigma2Post[,1],fit$sigma2Post[,2], type='l')
 \author{
 John R. Lewis \email{lewis.865@osu.edu}
 }
-

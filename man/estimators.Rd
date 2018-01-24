@@ -13,4 +13,3 @@ Some utility functions for brlm
 Computing the Estimators for Conditions----
 Funtioned used to compute the location and scale estimators using the \link{rlm} function. This function is used within rlDirectEval and is not designed to be called directly (it uses several variables not in the arguments list)
 }
-
