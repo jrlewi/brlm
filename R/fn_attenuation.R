@@ -14,6 +14,7 @@ fn.attenuation <- function(ystst,X, proj,l1obs,s1obs,fn.psi=fn.psi.huber, fn.chi
   #W<-t(Vt)[,(p+1):n]
   grads.ystst<-fn.grads(ystst,X, l1obs, s1obs,fn.psi, fn.chi)
   grad.y.B<-grads.ystst[1:p,]
+  if(p == 1){grad.y.B <- matrix(grad.y.B, nrow = 1)}
   grad.y.s<-grads.ystst[(p+1),]
   unit.a<-grad.y.s/sqrt(sum(grad.y.s*grad.y.s)) #normalize
   zstst<-proj%*%ystst

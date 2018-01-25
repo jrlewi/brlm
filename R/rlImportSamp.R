@@ -43,7 +43,7 @@ rlImportSamp<-function(X,y, psi, scale.est='Huber',k2=1.345, mu0, Sigma0, alpha,
   if(!is.null(instDist)){stop('Currently instDist must be NULL')}
 
   meanInstBeta<<-b.obs
-  sigmaInstBeta<<-5*vcov(rlm.obs)
+  sigmaInstBeta<<-as.matrix(5*vcov(rlm.obs))
   meanInstSigma2<<-s.obs^2
   sdInstSigma2<<-2*s.obs
 

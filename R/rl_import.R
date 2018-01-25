@@ -22,28 +22,28 @@
 #' @export
 rl_importance <- function(y,X, statistic , mu0, Sigma0, alpha, beta,cov_b, scale, smooth=1,N,Nins){
 
-
+  Sigma0 <- as.matrix(Sigma0)
   if (!is.function(statistic)){
     statistic <- get(statistic, mode = "function")
   }
   n <- length(y)
   p <- ncol(X)
-  if(length(scale) != p+1){stop('length of scale not p+1')}
+  if(length(scale) != 1){stop('length of scale not 1')}
 
   # find summary statistics ----
   obs_stat<-statistic(y,X)
   if(length(obs_stat) != p+1){stop('statistic value not length p+1')}
-  t.obs<-obs_stat[1:p]
+  b.obs<-obs_stat[1:p]
   s.obs<-obs_stat[p+1]
   log.s.obs<-log(s.obs)
   meanInstBeta <- b.obs
-  sigmaInstBeta <- cov_b
-  meanInstSigma2 <- s.obs
+  sigmaInstBeta <- as.matrix(cov_b)
+  meanInstSigma2 <- s.obs^2
   sdInstSigma2 <- scale
 
   #computing the estimators----
   estimators<-function(Y){
-    out <- statistic(X,Y)
+    out <- statistic(Y,X)
     c(out[1:p], log(out[p+1]))
   }
 
@@ -71,7 +71,7 @@ rl_importance <- function(y,X, statistic , mu0, Sigma0, alpha, beta,cov_b, scale
     l <- length(parms)
     betas <- parms[1:(l-1)]
     sigma2 <- parms[l]
-    mvtnorm::dmvnorm(betas, mean=meanInstBeta, sigma=sigmaInstBeta, log=TRUE)+dtnorm(sigma2,mean=meanInstSigma2, sd=sdInstSigma2,log=TRUE, lower=0)
+    mvtnorm::dmvnorm(betas, mean=meanInstBeta, sigma = sigmaInstBeta, log=TRUE)+dtnorm(sigma2,mean=meanInstSigma2, sd=sdInstSigma2,log=TRUE, lower=0)
   }
 
   fn.sample.instBeta <- function(){

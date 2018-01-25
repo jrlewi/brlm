@@ -34,7 +34,7 @@ restrictedBayesLm<-function(y, X,regEst='Huber',scaleEst='Huber',mu0, Sigma0, a0
   sigma2Cur<-sigma2Int
 
   Q<-qr.Q(qr(X))
-  projMatrix<-diag(n)-tcrossprod(Q,Q) #Q%*%t(Q)
+  projMatrix<-as.matrix(diag(n)-tcrossprod(Q,Q)) #Q%*%t(Q)
 
   ############################
   #define the psi and chi functions
