@@ -49,6 +49,7 @@ Direct evaluation uses kernel density estimation with a Gaussian kernel to estim
 A simple Riemann sum is used to determine the normalizing constant. Parameters for this numerical integration are specified by \code{mu_lims,sigma2_lims, length_mu}, and \code{length_sigma2}.
 }
 \examples{
+library(MASS)
 set.seed(1) # for reproducibility,
  # length_mu, length_sigma2, N should be larger in reality -
  # they are small so the example runs quickly

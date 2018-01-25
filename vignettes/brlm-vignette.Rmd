@@ -12,10 +12,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 ```{r setup, echo=FALSE, include=FALSE}
-require(brlm)
-require(ggplot2)
-require(MASS)
-require(ks)
+library(brlm)
+library(ggplot2)
+library(MASS)
+library(ks)
 ```
 
 # Introduction
@@ -40,44 +40,43 @@ Since the pdf of the order statistics can be written down explicitly, fitting th
 As an example, consider the following data sample from a mixture of normals both centered at $\mu=0$ but with a proportion $p=.2$ have an order of magnitude larger variance:
 
 ```{r generate data, fig.height=5, fig.width=7}
-set.seed(1)
-n<-100; p<-.2; mu<-0;sigma<-1; c<-10
-bin<-rbinom(n,1, p)
-y<-sapply(bin, function(x) ifelse(x, rnorm(1, mu, sqrt(c)*sigma), rnorm(1, mu,sigma)))
-y<-data.frame(samples=y)
-ggplot(data=y, aes(samples, ..density..))+geom_histogram(col=1)
+# set.seed(1)
+# n<-100; p<-.2; mu<-0;sigma<-1; c<-10
+# bin<-rbinom(n,1, p)
+# y<-sapply(bin, function(x) ifelse(x, rnorm(1, mu, sqrt(c)*sigma), rnorm(1, mu,sigma)))
+# y<-data.frame(samples=y)
+# ggplot(data=y, aes(samples, ..density..))+geom_histogram(col=1)
 ```
 
 We can fit both the full model and the restricted model with `fitOrderStat`
 
 ```{r order stat model, cache=TRUE}
 eta<-5
-tau<-4 
+tau<-4
 alpha<-5
 beta<-5
 k<-15
-mu_lims<-c(-3,3)
-length_mu<-300
-sigma2_lims<-c(0.01, 20)
-length_sigma2<-300
-fit_full<-fitOrderStat(y=y$samples,k=0, mu_lims=mu_lims,length_mu=length_mu, sigma2_lims=sigma2_lims,length_sigma2=length_sigma2, eta=eta, tau=tau, alpha=alpha, beta=beta)
-
-fit_restricted<-fitOrderStat(y=y$samples,k=k, mu_lims=mu_lims,length_mu=length_mu, sigma2_lims=sigma2_lims,length_sigma2=length_sigma2,eta=eta, tau=tau, alpha=alpha, beta=beta)
+# mu_lims<-c(-3,3)
+# length_mu<-300
+# sigma2_lims<-c(0.01, 20)
+# length_sigma2<-300
+# fit_full<-fitOrderStat(y=y$samples,k=0, mu_lims=mu_lims,length_mu=length_mu, sigma2_lims=sigma2_lims,length_sigma2=length_sigma2, eta=eta, tau=tau, alpha=alpha, beta=beta)
+# 
+# fit_restricted<-fitOrderStat(y=y$samples,k=k, mu_lims=mu_lims,length_mu=length_mu, sigma2_lims=sigma2_lims,length_sigma2=length_sigma2,eta=eta, tau=tau, alpha=alpha, beta=beta)
 ```
 
-
-For illustration we set $\eta=$ `r eta`,$\tau=$`r tau`, $\alpha=$ `r alpha`, and $\beta=$ `r beta`. This means that the prior for $\mu$ is slightly offset from its true value. For the restricted posterior we take $k=$ `r k`. Taking a look at the output of the function, we can easily plot the marginal posteriors for $\mu$ under both the restricted and full models. 
+<!-- For illustration we set $\eta=$ `r eta`,$\tau=$`r tau`, $\alpha=$ `r alpha`, and $\beta=$ `r beta`. This means that the prior for $\mu$ is slightly offset from its true value. For the restricted posterior we take $k=$ `r k`. Taking a look at the output of the function, we can easily plot the marginal posteriors for $\mu$ under both the restricted and full models.  -->
 
 ```{r plot order results, fig.height=5, fig.width=7}
-names(fit_restricted)
-colnames(fit_restricted$muPost)
-full_mu<-data.frame(fit_full$muPost, fit="full")
-rest_mu<-data.frame(fit_restricted$muPost, fit="restricted")
-mu_post<-rbind(full_mu, rest_mu)
-den_plot<-ggplot(data=mu_post)+
-  geom_line( aes(x=mu, y=posterior, col=fit), lwd=1.25)+
-  xlim(c(-1,1)) #note - this will throw an error due to values being removed, but thats okay :)
-den_plot
+# names(fit_restricted)
+# colnames(fit_restricted$muPost)
+# full_mu<-data.frame(fit_full$muPost, fit="full")
+# rest_mu<-data.frame(fit_restricted$muPost, fit="restricted")
+# mu_post<-rbind(full_mu, rest_mu)
+# den_plot<-ggplot(data=mu_post)+
+#   geom_line( aes(x=mu, y=posterior, col=fit), lwd=1.25)+
+#   xlim(c(-1,1)) #note - this will throw an error due to values being removed, but thats okay :)
+# den_plot
 ```
 
 We can see more precise inference on $\mu$ under the restricted posterior. See [our JSM Proceedings Paper](http://www.stat.osu.edu/~yklee/mss/JSM2012_proceedings.pdf) for a more extensive simulation study showing the advantage of the restricted likelihood approach in this situation. Of course the analyst must choose $k$ appropriately. Implementing the function also involves defining the grid to be fine enough over the range of posterior mass using inputs `mu_lims, length_mu, sigma2_lims,length_sigma2`. 
@@ -93,26 +92,26 @@ ggplot(data=data.frame(newcomb=newcomb), aes(newcomb,..density..))+geom_histogra
 ```
   
 ```{r fit Newcomb data, cache=TRUE}
-set.seed(1) # for reproducibility,
-newcomb_tukey_direct<-rlDirectEval(y=newcomb, psi=psi.bisquare, scale.est='Huber',eta=23.6, tau=2.04, alpha=5, beta=10, mu_lims=c(20,32),
-sigma2_lims=c(0.001,100), length_mu=300, length_sigma2=300,
-N=1e4)
-
-newcomb_tukey_imp<-rlImportSamp(X=rep(1, length(newcomb)),y=newcomb, psi=psi.bisquare, scale.est='Huber', mu0=23.6, Sigma0=matrix(2.04^2,1,1), alpha=5, beta=10,N=1e4,Nins=1e4)
+# set.seed(1) # for reproducibility,
+# newcomb_tukey_direct<-rlDirectEval(y=newcomb, psi=psi.bisquare, scale.est='Huber',eta=23.6, tau=2.04, alpha=5, beta=10, mu_lims=c(20,32),
+# sigma2_lims=c(0.001,100), length_mu=300, length_sigma2=300,
+# N=1e4)
+# 
+# newcomb_tukey_imp<-rlImportSamp(X=rep(1, length(newcomb)),y=newcomb, psi=psi.bisquare, scale.est='Huber', mu0=23.6, Sigma0=matrix(2.04^2,1,1), alpha=5, beta=10,N=1e4,Nins=1e4)
 ```
 `rlDirectEval` uses the direct sampling method and is only available for the location-scale normal theory model above. `rlImportSamp` uses the importance sampling method. The inputs are slightly different as it is set up for the linear regression extension to the location-scale model. `psi` defines the location estimator. Here it is set to `psi.bisquare` which is Tukey's bisquare `psi` function from the `MASS` package. The user can create their own `psi` function in the formate discribed in the help page to `MASS::rlm`. `scale.est` is set to `Huber` - Huber's proposal 2 estimator (can also be specified with `proposal 2`. The other option is median absolute deviation specified by `MAD`. `N` is the number of samples to use for the kernel density estimation of the restricted likelihood (i.e. the pdf of the conditioning statistics) used in both methods and `Nins` is the number of importance samples. The computation time depends heavily on these values, but they should be chosen large enough to achieve convergence of the posterior estimates. Plots of the marginal density of $\mu$ and $\sigma^2$ can be displayed as follows
 
 ```{r plot Necomb results, fig.height=5, fig.width=7}
-names(newcomb_tukey_direct) 
-names(newcomb_tukey_imp) 
-plot(newcomb_tukey_direct$muPost[,1],newcomb_tukey_direct$muPost[,2], type='l', col=4, ylab='Density', xlab=expression(mu), main='')
-lines(density(newcomb_tukey_imp$impSamps[,1], weights=newcomb_tukey_imp$w), col=5)
-grid()
-plot(newcomb_tukey_direct$sigma2Post[,1],newcomb_tukey_direct$sigma2Post[,2], type='l', ylab='Density', xlab=expression(sigma^2), main='')
-lines(density(newcomb_tukey_imp$impSamps[,2], weights=newcomb_tukey_imp$w), col=5)
-grid()
+# names(newcomb_tukey_direct) 
+# names(newcomb_tukey_imp) 
+# plot(newcomb_tukey_direct$muPost[,1],newcomb_tukey_direct$muPost[,2], type='l', col=4, ylab='Density', xlab=expression(mu), main='')
+# lines(density(newcomb_tukey_imp$impSamps[,1], weights=newcomb_tukey_imp$w), col=5)
+# grid()
+# plot(newcomb_tukey_direct$sigma2Post[,1],newcomb_tukey_direct$sigma2Post[,2], type='l', ylab='Density', xlab=expression(sigma^2), main='')
+# lines(density(newcomb_tukey_imp$impSamps[,2], weights=newcomb_tukey_imp$w), col=5)
+# grid()
 ```
 
 We see good agreement between the two methods - as we should expect. The agreement could improve further by using a finer grid, increasing `N` or `Nins`. 
 
-## Belgium Call Data
+## Belgian Call Data

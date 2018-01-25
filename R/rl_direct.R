@@ -26,13 +26,6 @@
 #' @param ... additional arguments to be passed to \code{psi}
 #' @return A list of length 4: the joint posterior, the two marginals, and the bandwidths used for the kernel density estimate
 #' @author John R. Lewis \email{lewis.865@@osu.edu}
-  #' @examples
-  #' eta <- 23.6; tau <- 2.04; alpha <- 5; beta <- 10;
-  #' mu_lims <- c(-50, 50); length_mu <- 10;
-  #' sigma2_lims <- c(.01, 100); length_sigma2 <- 10; N <- 10
-  #' # likely need to increase N, length_mu, and length_sigma2
-  #' fit<- rl_direct(y, statistic = 'rlm_tukey', eta, tau, alpha, beta, mu_lims, sigma2_lims,length_mu, length_sigma2, smooth=1,N)
-
 #'@export
 rl_direct<-function(y, statistic, eta, tau, alpha, beta, mu_lims, sigma2_lims,length_mu, length_sigma2, smooth=1,N){
 

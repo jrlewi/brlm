@@ -2,23 +2,25 @@
 
 #'
 #' Full model: \deqn{
-#' \beta~N(\mu_0, \Sigma_0),
+#' b~N(\mu_0, \Sigma_0),
 #' \sigma^2~IG(\alpha, \beta),
-#' y~N(X\beta, \sigma^2)
+#' y~N(Xb, \sigma^2)
 #' }
-#' For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y)=(b(y), s(y))}. Current implementation allows for these to be a pair of M-estimators as implemented in \code{\link[MASS]{rlm}}
-#' \code{statistic} is a function of \code{X}, \code{y}  and outputing a p+1-dimensional vector with the p location statistics (for \code{beta}) and 1 scale statistic to be conditioned on.
+#' For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y) = (b(y), s(y))}.
+#' \code{statistic} is a function of \code{X}, \code{y}  and outputing the p+1-dimensional vector \eqn{T(y)} with the p location statistics (for \code{b}) and 1 scale statistic.
+#' Instrumental (importance) distributions are normal. For beta, a multivariate normal centererd at the estimate of beta with covariance \code{cov_b}. For sigma^2, a truncated normal with mean (before truncation) of the estimate of \eqn{\sigma^2} with sd \code{scale}.
 #'
 #'
 #' @inheritParams rl_direct
-#' @param X	a matrix or data frame containing the explanatory variables. The matrix should include a vector of 1's if intercept is desired.
-#' @param statistic , character name of a function computing the location and scale statistic. See details for specification of this function.
-#' @param scale vector length p+1 defining the standard deviations for the normal instrumental distributions for \eqn{\beta} and \eqn{\sigma^2} (with \eqn{\sigma^2} truncated at 0). Importance sample weights should be examined to evaluate the appropriatness of this choice.
+#' @param X a matrix or data frame containing the explanatory variables. The matrix should include a vector of 1's if intercept is desired.
+#' @param statistic character name of a function computing the location and scale statistic. See details for specification of this function.
+#' @param cov_b positive definite pxp matrix defining the covariance for the normal instrumental distribution on \code{b}. Importance sample weights should be examined to evaluate the appropriatness of this choice.
+#' @param scale numeric, sd for the truncated normal instrumental distribution for \eqn{\sigma^2}. Importance sample weights should be examined to evaluate the appropriatness of this choice.
 #' @param Nins number of samples from the instrumental distribution
-#' @return list with elements \code{impSamps}, \code{w}, \code{fit}. These are the \code{Nins} by \code{length(beta)})+1} matrix of importance samples, the corresponding weights, and the observed statistic.
+#' @return list with elements \code{impSamps}, \code{w}, \code{fit}. These are the \code{Nins} by \code{length(beta)+1} matrix of importance samples, the corresponding weights, and the observed statistic.
 #' @author John R. Lewis \email{lewis.865@@osu.edu}
 #' @export
-rl_import<-function(y,X, statistic , mu0, Sigma0, alpha, beta,scale, smooth=1,N,Nins){
+rl_importance <- function(y,X, statistic , mu0, Sigma0, alpha, beta,cov_b, scale, smooth=1,N,Nins){
 
 
   if (!is.function(statistic)){
@@ -34,16 +36,11 @@ rl_import<-function(y,X, statistic , mu0, Sigma0, alpha, beta,scale, smooth=1,N,
   t.obs<-obs_stat[1:p]
   s.obs<-obs_stat[p+1]
   log.s.obs<-log(s.obs)
-  meanInstBeta <-b.obs
-  sigmaInstBeta <- diag(scale[1:p])
+  meanInstBeta <- b.obs
+  sigmaInstBeta <- cov_b
   meanInstSigma2 <- s.obs
-  sdInstSigma2 <- scale[p+1]
+  sdInstSigma2 <- scale
 
-
-  # rlm.estimators<-function(Y){
-  #   rlm.out<-rlm(X,Y,psi=psi, scale.est=scale.est, k2=k2,maxit=maxit)
-  #   return(c(as.numeric(rlm.out$coefficients), log(as.numeric(rlm.out$s))))
-  # }
   #computing the estimators----
   estimators<-function(Y){
     out <- statistic(X,Y)

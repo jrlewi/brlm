@@ -15,47 +15,8 @@
 #' @param sdInstDist Vector of length 2 defining the scale for the instrumental distribution when instDist=NULL. In this case, the instrumental distribution for \eqn{\mu} and \eqn{\sigma^2} are independent normal and log normal distributions, respectively. The first value is then the standard deviation of the normal. The second is the standard deviation of \eqn{\log\sigma^2} (i.e. the \code{sdlog} argument in \code{\link[stats]{Lognormal}}). If left as NULL a mutltiple of 5 is used on the asymptotic variance covariance matrix. Importance sample weights should be examined to evaluate the appropriatness of this choice.
 #' @param Nins number of samples from the instrumental distribution
 #' @param ... arguments to pass to the psi functions
-#' @return list with elements \code{impSamps}, \code{w}, \code{fit}. These are the \code{Nins} by \code{length(beta)})+1} matrix of importance samples, the corresponding weights, and the fitted robust regression.
+#' @return list with elements \code{impSamps}, \code{w}, \code{fit}. These are the \code{Nins} by \code{length(beta)+1} matrix of importance samples, the corresponding weights, and the fitted robust regression.
 #' @author John R. Lewis \email{lewis.865@@osu.edu}
-#' @examples
-#' # Example using the Belgium Phone calls data
-#' # Conditioning statistics are simultaneous M-estimators of coefficients and scale.
-#' In the example below, Tukeys bisquare is used for the coefficients and median absolute deviation (MAD) is used for the scale. Note the sample sizes are dramatically reduces to run quickly.
-#'
-#' nForPrior<-3 #number of data points to use formulate prior
-#' data(MASS::phones) #load a prepare data
-#' phones<-data.frame(cbind(phones$year, phones$calls))
-#' names(phones)<-c("year", "calls")
-#' phones$year<-phones$year-mean(phones$year) #center
-#' phonesFit<-phones[-c(1:nForPrior),]
-#' n<-nrow(phonesFit)
-#' X<-cbind(rep(1, n), phonesFit$year)
-#' y<-phonesFit$calls
-#'
-#' # formulate priors
-#' phonesPrior<-phones[c(1:nForPrior),]
-#' priorFit<-lm(calls~year, data=phonesPrior)
-#' summary(priorFit)
-#' mu0<-coef(priorFit)
-#' sigma2Hat<-summary(priorFit)$sigma^2
-#' alpha<-2
-#' beta<-(alpha-1) #sigma2Hat*(alpha-1)
-#'
-#' # choosing how much to inlfate fitted variance covariance matrix from the prior data fit
-#' inflate<-10
-#' Sigma0<-vinflate[inflate]*vcov(priorFit)
-#'
-#'  # Fit restricted likelihood model using importance sampling
-#' restFit<-rlImportSamp(X=X,y=y, psi=psi.bisquare, scale.est='MAD', mu0=mu0, Sigma0=Sigma0, alpha=alpha, beta=beta, smooth=1,N=1e1,Nins=1e1, maxit=10000)
-#'
-#' # Some plots
-#' plot(restFit$w, cex=.1, pch=19)
-#' plot(density(restFit$impSamps[,1],weights=restFit$w))
-#' abline(v=coef(restFit$fit)[1], col=2)
-#' plot(density(restFit$impSamps[,2],weights=restFit$w))
-#' abline(v=coef(restFit$fit)[2], col=2)
-#' plot(density(restFit$impSamps[,3],weights=restFit$w))
-#' abline(v=summary(restFit$fit)$sigma, col=2)
 #' @export
 rlImportSamp<-function(X,y, psi, scale.est='Huber',k2=1.345, mu0, Sigma0, alpha, beta,instDist=NULL, sdInstDist =NULL, smooth=1,N,Nins, maxit=1000,...){
 

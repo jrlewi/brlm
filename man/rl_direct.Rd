@@ -44,13 +44,6 @@ Direct evaluation uses kernel density estimation with a Gaussian kernel to estim
 
 A simple numerical integration using Riemann sums is used to determine the normalizing constant. Parameters for this numerical integration are specified by \code{mu_lims,sigma2_lims, length_mu}, and \code{length_sigma2}.
 }
-\examples{
-eta <- 23.6; tau <- 2.04; alpha <- 5; beta <- 10;
-mu_lims <- c(-50, 50); length_mu <- 10;
-sigma2_lims <- c(.01, 100); length_sigma2 <- 10; N <- 10
-# likely need to increase N, length_mu, and length_sigma2
-fit<- rl_direct(y, statistic = 'rlm_tukey', eta, tau, alpha, beta, mu_lims, sigma2_lims,length_mu, length_sigma2, smooth=1,N)
-}
 \author{
 John R. Lewis \email{lewis.865@osu.edu}
 }

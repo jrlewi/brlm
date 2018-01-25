@@ -28,6 +28,7 @@
 #' @return A list of length 4: the joint posterior, the two marginals, and the bandwidths used for the kernel density estimate
 #' @author John R. Lewis \email{lewis.865@@osu.edu}
   #' @examples
+  #' library(MASS)
   #' set.seed(1) # for reproducibility,
   #'  # length_mu, length_sigma2, N should be larger in reality -
   #'  # they are small so the example runs quickly

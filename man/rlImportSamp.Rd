@@ -37,6 +37,9 @@ rlImportSamp(X, y, psi, scale.est = "Huber", k2 = 1.345, mu0, Sigma0, alpha,
 
 \item{...}{arguments to pass to the psi functions}
 }
+\value{
+list with elements \code{impSamps}, \code{w}, \code{fit}. These are the \code{Nins} by \code{length(beta)+1} matrix of importance samples, the corresponding weights, and the fitted robust regression.
+}
 \description{
 Full model: \deqn{
 \beta~N(\mu_0, \Sigma_0),
@@ -44,46 +47,6 @@ Full model: \deqn{
 y~N(X\beta, \sigma^2)
 }
 For the restricted likelihood, conditioning is done on a pair of location and scale statistics \eqn{T(y)=(b(y), s(y))}. Current implementation allows for these to be a pair of M-estimators as implemented in \code{\link[MASS]{rlm}}
-}
-\examples{
-# Example using the Belgium Phone calls data
-# Conditioning statistics are simultaneous M-estimators of coefficients and scale.
-In the example below, Tukeys bisquare is used for the coefficients and median absolute deviation (MAD) is used for the scale. Note the sample sizes are dramatically reduces to run quickly.
-
-nForPrior<-3 #number of data points to use formulate prior
-data(MASS::phones) #load a prepare data
-phones<-data.frame(cbind(phones$year, phones$calls))
-names(phones)<-c("year", "calls")
-phones$year<-phones$year-mean(phones$year) #center
-phonesFit<-phones[-c(1:nForPrior),]
-n<-nrow(phonesFit)
-X<-cbind(rep(1, n), phonesFit$year)
-y<-phonesFit$calls
-
-# formulate priors
-phonesPrior<-phones[c(1:nForPrior),]
-priorFit<-lm(calls~year, data=phonesPrior)
-summary(priorFit)
-mu0<-coef(priorFit)
-sigma2Hat<-summary(priorFit)$sigma^2
-alpha<-2
-beta<-(alpha-1) #sigma2Hat*(alpha-1)
-
-# choosing how much to inlfate fitted variance covariance matrix from the prior data fit
-inflate<-10
-Sigma0<-vinflate[inflate]*vcov(priorFit)
-
- # Fit restricted likelihood model using importance sampling
-restFit<-rlImportSamp(X=X,y=y, psi=psi.bisquare, scale.est='MAD', mu0=mu0, Sigma0=Sigma0, alpha=alpha, beta=beta, smooth=1,N=1e1,Nins=1e1, maxit=10000)
-
-# Some plots
-plot(tst$w, cex=.1, pch=19)
-plot(density(tst$impSamps[,1],weights=tst$w))
-abline(v=coef(restFit$fit)[1], col=2)
-plot(density(tst$impSamps[,2],weights=tst$w))
-abline(v=coef(restFit$fit)[2], col=2)
-plot(density(tst$impSamps[,3],weights=tst$w))
-abline(v=summary(restFit$fit)$sigma, col=2)
 }
 \author{
 John R. Lewis \email{lewis.865@osu.edu}
