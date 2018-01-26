@@ -2,6 +2,10 @@ library(brlm)
 library(MASS)
 library(mvtnorm)
 
+context('Old v. new direct sampling functions')
+
+# rl_direct vs. rlDirect -----
+
 data(newcomb)
 y <- newcomb
 
@@ -37,3 +41,5 @@ test_that('new version rl_direct matches old', {
   expect_equal(fit_new, fit_old)
   expect_equal(fit_new2, fit_old2)
 })
+
+
