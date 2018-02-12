@@ -46,11 +46,6 @@ plot_kd(1, c(0, 7))
 plot_kd(2, c(0, 10))
 
 
-
-
-
-
-
 # with the phones data ----
 
 data(phones)
@@ -61,11 +56,11 @@ X <- cbind(rep(1, length(phones$year)), phones$year)
 
 
 rlm_tukey <- function(y, X){
-  fit <- rlm(X, y ,psi = psi.bisquare,  scale.est = 'Huber', maxit=1000)
+  fit <- rlm(X, y, psi = psi.bisquare,  scale.est = 'MAD', maxit=1000)
   c(fit$coefficients, fit$s)
 }
 
-fit_rlm <- fit <- rlm(X, y ,psi = psi.bisquare,  scale.est = 'Huber', maxit=1000)
+fit_rlm <- rlm(X, y ,psi = psi.bisquare,  scale.est = 'MAD', maxit=1000)
 
 
 mu0 <- c(0,0)

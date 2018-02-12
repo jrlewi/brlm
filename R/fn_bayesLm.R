@@ -5,9 +5,10 @@
 #' \eqn{\sigma^2~IG(a0, b0)},
 #' \eqn{y~N(X\beta, \sigma^2 I)}
 #'
+#'
 #' Uses Gibbs sampling to sample from the posterior under the above linear regression model.
 #'
-#' @param  y vector of repsonse
+#' @param y vector of repsonse
 #' @param X design matrix for regression. If intercept is desired, a column of 1's is needed
 #' @param mu0 prior mean for beta
 #' @param Sigma0 prior var-cov matrix for \eqn{\beta}
@@ -18,7 +19,7 @@
 #' @param nburn number of iterations to toss
 #' @return list with mcmc sample and mean fitted values
 #' @export
-bayesLm<-function(y, X,mu0, Sigma0, a0, b0,sigma2Int, nkeep=1e4, nburn=1e3){
+bayesLm <- function(y, X, mu0, Sigma0, a0, b0,sigma2Int, nkeep=1e4, nburn=1e3){
   p<-ncol(X)
   n<-length(y)
   total<-nkeep+nburn
