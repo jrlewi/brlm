@@ -97,9 +97,8 @@ bayesTdistLm<-function(y, X,mu0, Sigma0 , a0, b0,parInit=NULL,nu, nkeep=1e4, nbu
   #output
   colnames(betaSamples)<-sapply(seq(1:p), FUN=function(x) paste('beta',x,sep=''))
   mcmcBetaSigma2<-mcmc(cbind(betaSamples[(nburn+1):total,],sigma2Samples[(nburn+1):total]))
-  colnames(mcmcBetaSigma2)[1:p] <- paste0('beta', 1:p)
-  colnames(mcmcBetaSigma2)[p+1]<-'sigma2'
-  fittedValues<-X%*%summary(mcmcBetaSigma2)$statistics[1:p,1]
+colnames(mcmcBetaSigma2) <- c(paste0('beta', 1:p), 'sigma2')
+fittedValues<-X%*%summary(mcmcBetaSigma2)$statistics[1:p,1]
   out<-list()
   out$mcmc<-mcmcBetaSigma2
   out$fitted.values<-fittedValues
