@@ -58,7 +58,7 @@ hier_TLm(y, X, nkeep = 10000, nburn = 1000, mu0, Sigma0, a0, b0, mu_bstr,
 
 \item{regEst}{Regression estimator on which to condition . Either Huber or Tukey.}
 
-\item{scaleEst}{scale estimator on which to condition('Huber' is only option here)}
+\item{scaleEst}{Scale estimator on which to condition('Huber' is only option here)}
 
 \item{nu}{fixed degrees of freedom for assumed t-distribution}
 
