@@ -423,7 +423,7 @@ fn.one.rep.Z<-function(Zcur, y,X, betalMat, rho,step=rep(1,length(Zcur))){
 #' @param swSq default to 1.
 #' @param w1,w2,a_psir,b_psir parameters definining prior for rho. In detail: rho~beta(mean=mu_rho, precision=psi_rho), mu_rho~beta(w1,w2) and psi_rho~gamma(a_psir, b_psir)
 #' @param nkeep,nburn number of MCMC iterations to keep, number for burn in.
-#' @param step_logbstar,mu_rho_step,psi_rho_step,rho_step tunning parameters for MH Steps
+#' @param step_logbstar,mu_rho_step,psi_rho_step,rho_step,step_Z tunning parameters for MH Steps
 
 fn.hier.one.rep<-function(y,
                           X,
@@ -440,7 +440,8 @@ fn.hier.one.rep<-function(y,
                           step_logbstar,
                           mu_rho_step,
                           psi_rho_step,
-                          rho_step
+                          rho_step,
+                          step_Z
 ){ #y, X are list of group level responses
   #fn.one.rep.beta.l loops through for each beta.l
   #[beta_i|-]
@@ -504,7 +505,8 @@ hierNormTheoryLm<-function(y,
                            step_logbstar,
                            mu_rho_step,
                            psi_rho_step,
-                           rho_step
+                           rho_step,
+                           step_Z
 ){
   mu0<<-mu0
   Sigma0<<-Sigma0
@@ -579,7 +581,8 @@ hierNormTheoryLm<-function(y,
                           step_logbstar,
                           mu_rho_step,
                           psi_rho_step,
-                          rho_step)
+                          rho_step,
+                          step_Z)
     #update temp values
     Beta<-samp$Beta
     betalMat<-samp$betalMat
@@ -648,7 +651,8 @@ hierNormTheoryRestLm <- function(y,
                                 step_logbstar,
                                 mu_rho_step,
                                 psi_rho_step,
-                                rho_step)
+                                rho_step,
+                                step_Z)
 {
   #y is a list of the responses for each group
   #X is the design Matrix-a list of the design matrices Xi for each group
@@ -795,7 +799,8 @@ hierNormTheoryRestLm <- function(y,
                           step_logbstar,
                           mu_rho_step,
                           psi_rho_step,
-                          rho_step)
+                          rho_step,
+                          step_Z)
     #update temp values
     Beta<-samp$Beta
     betalMat<-samp$betalMat

@@ -10,22 +10,23 @@
 \title{MCMC functions for the hierarchical versions of Normal Theory Model, corresponding restricted version, and heavy-tailed version used in the paper.}
 \usage{
 fn.hier.one.rep(y, X, XtX, v1, v2, bstar, Beta, betalMat, Z, mu_rho, psi_rho,
-  rho, step_logbstar, mu_rho_step, psi_rho_step, rho_step)
+  rho, step_logbstar, mu_rho_step, psi_rho_step, rho_step, step_Z)
 
 hierNormTheoryLm(y, X, nkeep = 10000, nburn = 1000, mu0, Sigma0, a0, b0,
   mu_bstr, psi_bstr, swSq = 1, w1, w2, a_psir, b_psir, step_logbstar,
-  mu_rho_step, psi_rho_step, rho_step)
+  mu_rho_step, psi_rho_step, rho_step, step_Z)
 
 hierNormTheoryRestLm(y, X, regEst = "Huber", scaleEst = "Huber",
   nkeep = 10000, nburn = 1000, mu0, Sigma0, a0, b0, mu_bstr, psi_bstr,
   swSq = 1, w1, w2, a_psir, b_psir, maxit = 400, step_logbstar, mu_rho_step,
-  psi_rho_step, rho_step)
+  psi_rho_step, rho_step, step_Z)
 
 fn.one.rep.tHierModel(y, X, v1, v2, bstar, Beta, betalMat, vlList, Z, mu_rho,
-  psi_rho, rho)
+  psi_rho, rho, step_logbstar, mu_rho_step, psi_rho_step, rho_step, step_Z)
 
 hier_TLm(y, X, nkeep = 10000, nburn = 1000, mu0, Sigma0, a0, b0, mu_bstr,
-  psi_bstr, swSq = 1, w1, w2, a_psir, b_psir, nu)
+  psi_bstr, swSq = 1, w1, w2, a_psir, b_psir, nu, step_logbstar, mu_rho_step,
+  psi_rho_step, rho_step, step_Z)
 }
 \arguments{
 \item{y, X}{lists of group level responses and design matrices}
@@ -48,7 +49,7 @@ hier_TLm(y, X, nkeep = 10000, nburn = 1000, mu0, Sigma0, a0, b0, mu_bstr,
 
 \item{rho}{desc}
 
-\item{step_logbstar, mu_rho_step, psi_rho_step, rho_step}{tunning parameters for MH Steps}
+\item{step_logbstar, mu_rho_step, psi_rho_step, rho_step, step_Z}{tunning parameters for MH Steps}
 
 \item{nkeep, nburn}{number of MCMC iterations to keep, number for burn in.}
 

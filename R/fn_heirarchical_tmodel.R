@@ -132,7 +132,12 @@ fn.one.rep.tHierModel<-function(y,
                                 Z,
                                 mu_rho,
                                 psi_rho,
-                                rho
+                                rho,
+                                step_logbstar,
+                                mu_rho_step,
+                                psi_rho_step,
+                                rho_step,
+                                step_Z
 ){ #y, X are list of group level responses
   #fn.one.rep.beta.l loops through for each beta.l
   #[beta_i|-]
@@ -158,15 +163,15 @@ fn.one.rep.tHierModel<-function(y,
   #[bstar|-]
   quad1<-fn.compute.quad1(Beta, mu0)
   quad2<-fn.compute.quad2(Beta, betalMat)
-  bstar<-fn.sample.bstar(bstar,v1,v2,quad1,quad2,K=nGroups,p)
+  bstar<-fn.sample.bstar(bstar,v1,v2,quad1,quad2,K=nGroups,p, step_logbstar)
   #[mu_rho|-]
-  mu_rho<-fn.sample.mu_rho(mu_rho,psi_rho, rho)
+  mu_rho<-fn.sample.mu_rho(mu_rho,psi_rho, rho, mu_rho_step)
 
   #[psi_rho|-]
-  psi_rho<-fn.sample.psi_rho(psi_rho,mu_rho, rho)
+  psi_rho<-fn.sample.psi_rho(psi_rho,mu_rho, rho,  psi_rho_step)
 
   #[rho|-]
-  rho<-fn.sample.rho(rho, mu_rho, psi_rho, Z)
+  rho<-fn.sample.rho(rho, mu_rho, psi_rho, Z,rho_step)
 
   out<-list()
   out$Beta<-Beta
@@ -204,7 +209,12 @@ hier_TLm<-function(y,
                         w2,
                         a_psir,
                         b_psir,
-                        nu #degrees of freedom for t-dist.
+                        nu, #degrees of freedom for t-dist.,
+                        step_logbstar,
+                        mu_rho_step,
+                        psi_rho_step,
+                        rho_step,
+                        step_Z
 ){
   mu0<<-mu0
   Sigma0<<-Sigma0
