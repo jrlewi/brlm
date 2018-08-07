@@ -14,7 +14,7 @@ fn.proposal.logbstar(logbstarCur, step_logbstar)
 
 fn.logpdf.prop.logbstar(bstarProp)
 
-fn.sample.bstar(bstarCur, v1, v2, quad1, quad2, K, p)
+fn.sample.bstar(bstarCur, v1, v2, quad1, quad2, K, p, step_logbstar)
 }
 \arguments{
 \item{bstar}{bstar}

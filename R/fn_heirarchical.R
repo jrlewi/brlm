@@ -106,7 +106,7 @@ fn.logpdf.prop.logbstar<-function(bstarProp){
   -log(bstarProp)
 } #dnorm(log(bstarProp),log(bstarCur),step_logbstar, log=TRUE)-log(bstarProp)
 #' @rdname bstar_step
-fn.sample.bstar<-function(bstarCur,v1,v2,quad1,quad2, K,p) {
+fn.sample.bstar<-function(bstarCur,v1,v2,quad1,quad2, K,p, step_logbstar) {
   logbstarCur<-log(bstarCur)
   logbstarProp<-fn.proposal.logbstar(logbstarCur, step_logbstar)
   bstarProp<-exp(logbstarProp)
@@ -194,7 +194,7 @@ fn.proposal.mu_rho<-function(mu_rhoCur, mu_rho_step){
   rnorm(1,mu_rhoCur, mu_rho_step)
 }
 #' @rdname  mu_rho
-fn.sample.mu_rho<-function(mu_rhoCur,psi_rho, rho){
+fn.sample.mu_rho<-function(mu_rhoCur,psi_rho, rho, mu_rho_step){
   mu_rhoProp<-fn.proposal.mu_rho(mu_rhoCur, mu_rho_step)
   #mu_rhoProp<-fn.proposal.mu_rho()
   logRat1<-fn.loglik.mu_rho(mu_rhoProp,psi_rho, rho)-fn.loglik.mu_rho(mu_rhoCur,psi_rho, rho)
@@ -233,7 +233,7 @@ fn.logpdf.prop.psirho<-function(psi_rho){
   (a_psir-1)*log(psi_rho)-b_psir*psi_rho
 } #
 #'@rdname psi_rho_samp
-fn.sample.psi_rho<-function(psi_rhoCur,mu_rho, rho){
+fn.sample.psi_rho<-function(psi_rhoCur,mu_rho, rho, psi_rho_step){
   #psi_rhoProp<-fn.proposal.psi_rho()
   psi_rhoProp<-fn.proposal.psi_rho(psi_rhoCur, psi_rho_step)
   #print(psi_rhoProp)
@@ -297,7 +297,7 @@ fn.loglike.rho<-function(rho, Z,alpha_rho,beta_rho){
   lik
 }
 #' @rdname rho_samp
-fn.sample.rho<-function(rhoCur, mu_rho, psi_rho, Z){
+fn.sample.rho<-function(rhoCur, mu_rho, psi_rho, Z, rho_step){
   ab<-fn.compute.ab(mu_rho,psi_rho)
   alpha_rho<-ab[1]
   beta_rho<-ab[2]
@@ -423,6 +423,7 @@ fn.one.rep.Z<-function(Zcur, y,X, betalMat, rho,step=rep(1,length(Zcur))){
 #' @param swSq default to 1.
 #' @param w1,w2,a_psir,b_psir parameters definining prior for rho. In detail: rho~beta(mean=mu_rho, precision=psi_rho), mu_rho~beta(w1,w2) and psi_rho~gamma(a_psir, b_psir)
 #' @param nkeep,nburn number of MCMC iterations to keep, number for burn in.
+#' @param step_logbstar,mu_rho_step,psi_rho_step,rho_step tunning parameters for MH Steps
 
 fn.hier.one.rep<-function(y,
                           X,
@@ -435,7 +436,11 @@ fn.hier.one.rep<-function(y,
                           Z,
                           mu_rho,
                           psi_rho,
-                          rho
+                          rho,
+                          step_logbstar,
+                          mu_rho_step,
+                          psi_rho_step,
+                          rho_step
 ){ #y, X are list of group level responses
   #fn.one.rep.beta.l loops through for each beta.l
   #[beta_i|-]
@@ -457,15 +462,15 @@ fn.hier.one.rep<-function(y,
   #[bstar|-]
   quad1<-fn.compute.quad1(Beta, mu0)
   quad2<-fn.compute.quad2(Beta, betalMat)
-  bstar<-fn.sample.bstar(bstar,v1,v2,quad1,quad2,K=nGroups,p)
+  bstar<-fn.sample.bstar(bstar,v1,v2,quad1,quad2,K=nGroups,p, step_logbstar)
   #[mu_rho|-]
-  mu_rho<-fn.sample.mu_rho(mu_rho,psi_rho, rho)
+  mu_rho<-fn.sample.mu_rho(mu_rho,psi_rho, rho, mu_rho_step)
 
   #[psi_rho|-]
-  psi_rho<-fn.sample.psi_rho(psi_rho,mu_rho, rho)
+  psi_rho<-fn.sample.psi_rho(psi_rho,mu_rho, rho, psi_rho_step)
 
   #[rho|-]
-  rho<-fn.sample.rho(rho, mu_rho, psi_rho, Z)
+  rho<-fn.sample.rho(rho, mu_rho, psi_rho, Z, rho_step)
 
   out<-list()
   out$Beta<-Beta
@@ -495,7 +500,11 @@ hierNormTheoryLm<-function(y,
                            w1,
                            w2,
                            a_psir,
-                           b_psir
+                           b_psir,
+                           step_logbstar,
+                           mu_rho_step,
+                           psi_rho_step,
+                           rho_step
 ){
   mu0<<-mu0
   Sigma0<<-Sigma0
@@ -566,7 +575,11 @@ hierNormTheoryLm<-function(y,
                           Z,
                           mu_rho,
                           psi_rho,
-                          rho)
+                          rho,
+                          step_logbstar,
+                          mu_rho_step,
+                          psi_rho_step,
+                          rho_step)
     #update temp values
     Beta<-samp$Beta
     betalMat<-samp$betalMat
@@ -631,7 +644,11 @@ hierNormTheoryRestLm <- function(y,
                                 w2,
                                 a_psir,
                                 b_psir,
-                                maxit=400)
+                                maxit=400,
+                                step_logbstar,
+                                mu_rho_step,
+                                psi_rho_step,
+                                rho_step)
 {
   #y is a list of the responses for each group
   #X is the design Matrix-a list of the design matrices Xi for each group
@@ -774,7 +791,11 @@ hierNormTheoryRestLm <- function(y,
                           Z,
                           mu_rho,
                           psi_rho,
-                          rho)
+                          rho,
+                          step_logbstar,
+                          mu_rho_step,
+                          psi_rho_step,
+                          rho_step)
     #update temp values
     Beta<-samp$Beta
     betalMat<-samp$betalMat

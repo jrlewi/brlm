@@ -14,7 +14,7 @@ fn.proposal.psi_rho(psi_rhoCur, psi_rho_step)
 
 fn.logpdf.prop.psirho(psi_rho)
 
-fn.sample.psi_rho(psi_rhoCur, mu_rho, rho)
+fn.sample.psi_rho(psi_rhoCur, mu_rho, rho, psi_rho_step)
 }
 \arguments{
 \item{psi_rho, psi_rhoCur}{desc}

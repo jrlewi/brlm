@@ -17,7 +17,7 @@ fn.proposal.rho(rhoCur, rho_step)
 
 fn.loglike.rho(rho, Z, alpha_rho, beta_rho)
 
-fn.sample.rho(rhoCur, mu_rho, psi_rho, Z)
+fn.sample.rho(rhoCur, mu_rho, psi_rho, Z, rho_step)
 }
 \arguments{
 \item{rho}{desc}

@@ -12,7 +12,7 @@ fn.loglik.mu_rho(mu_rho, psi_rho, rho)
 
 fn.proposal.mu_rho(mu_rhoCur, mu_rho_step)
 
-fn.sample.mu_rho(mu_rhoCur, psi_rho, rho)
+fn.sample.mu_rho(mu_rhoCur, psi_rho, rho, mu_rho_step)
 }
 \arguments{
 \item{mu_rho, }{mu_rhoCur}
