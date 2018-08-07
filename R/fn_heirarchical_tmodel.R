@@ -288,7 +288,12 @@ hier_TLm<-function(y,
                                 Z,
                                 mu_rho,
                                 psi_rho,
-                                rho)
+                                rho,
+                                step_logbstar,
+                                mu_rho_step,
+                                psi_rho_step,
+                                rho_step,
+                                step_Z)
     #update temp values
     Beta<-samp$Beta
     betalMat<-samp$betalMat
