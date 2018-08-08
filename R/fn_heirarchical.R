@@ -864,6 +864,74 @@ hierNormTheoryRestLm <- function(y,
 
 
 
+#' @rdname hier_models
+#' @param betalsamples the array of betals: in the specific format: the 3rd dimension is the groups. columns represent samples, row represent slopes
+#' @param sigma2lsamples: columns represnt groups, rows represent samples
+#' @param yhold list of holdout samples
+#' @param Xhold list of design matrices
+#' @export
+fn.compute.marginals.hierModelNormal<-function(betalsamples, sigma2lsamples, yhold,Xhold){
+
+
+  fits<-function(betahats, X){X%*%betahats}
+
+  betalSampsList <- lapply(1:dim(betalsamples)[3],function(x) betalsamples[,,x])
+  names(betalSampsList) <- names(yhold)
+  #holdout means
+
+  nMuList<-mapply(fits, betalSampsList, Xhold)
+
+  #sd's across samples for each holdout set
+  nSigmaList<-split(sqrt(sigma2lsamples), rep(1:ncol(sigma2lsamples), each = nrow(sigma2lsamples)))
+  names(nSigmaList)<-names(yhold)
+
+  mapply(FUN=function(yh,mean,sd){
+    rowMeans(dnorm(yh,mean,matrix(rep(sd, length(yh)), length(yh), length(sd),byrow=TRUE)))
+  }
+  ,yhold,nMuList,nSigmaList)
+
+}
+
+
+
+#' @rdname hier_models
+#' @param y data
+#' @param mean center of t distribution
+#' @param sigma scale of t distribution
+#' @param nu  degrees of freedom
+#' @export
+tdensity<-function(y, mean, sigma, nu){
+  (gamma(.5*(nu+1))/(gamma(.5*nu)*sigma*sqrt(nu*pi)))*(1+((y-mean)/sigma)^2/nu)^(-.5*(nu+1))
+}
+
+
+#' @rdname hier_models
+#' @param betalsamples the array of betals: in the specific format: the 3rd dimension is the groups. columns represent samples, row represent slopes
+#' @param sigma2lsamples: columns represnt groups, rows represent samples
+#' @param yhold list of holdout samples
+#' @param Xhold list of design matrices
+#' @param nu degrees of freedom in t model
+#' @export
+fn.compute.marginals.hierModelTmodel<-function(betalsamples, sigma2lsamples, yhold,Xhold){
+  #betalsamples the array of betals: in the specific format: the 3rd dimension is the groups. columns represent samples, row represent slopes
+  #sigma2lsampls: #columns represnt groups, rows represent samples
+
+  betalSampsList<-lapply(1:dim(betalsamples)[3],function(x) betalsamples[,,x])
+  names(betalSampsList)<-names(yhold)
+  #holdout means
+  nMuList<-mapply(fits, betalSampsList, Xhold)
+
+  #sd's across samples for each houldout set
+  nSigmaList<-split(sqrt(sigma2lsamples), rep(1:ncol(sigma2lsamples), each = nrow(sigma2lsamples)))
+  names(nSigmaList)<-names(yhold)
+
+  mapply(FUN=function(yh,mean,sd){
+    rowMeans(tdensity(yh,mean,matrix(rep(sd, length(yh)), length(yh), length(sd),byrow=TRUE), nu = nu))
+  }
+  ,yhold,nMuList,nSigmaList)
+
+}
+
 
 
 

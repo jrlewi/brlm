@@ -5,6 +5,9 @@
 \alias{fn.hier.one.rep}
 \alias{hierNormTheoryLm}
 \alias{hierNormTheoryRestLm}
+\alias{fn.compute.marginals.hierModelNormal}
+\alias{tdensity}
+\alias{fn.compute.marginals.hierModelTmodel}
 \alias{fn.one.rep.tHierModel}
 \alias{hier_TLm}
 \title{MCMC functions for the hierarchical versions of Normal Theory Model, corresponding restricted version, and heavy-tailed version used in the paper.}
@@ -20,6 +23,12 @@ hierNormTheoryRestLm(y, X, regEst = "Huber", scaleEst = "Huber",
   nkeep = 10000, nburn = 1000, mu0, Sigma0, a0, b0, mu_bstr, psi_bstr,
   swSq = 1, w1, w2, a_psir, b_psir, maxit = 400, step_logbstar, mu_rho_step,
   psi_rho_step, rho_step, step_Z)
+
+fn.compute.marginals.hierModelNormal(betalsamples, sigma2lsamples, yhold, Xhold)
+
+tdensity(y, mean, sigma, nu)
+
+fn.compute.marginals.hierModelTmodel(betalsamples, sigma2lsamples, yhold, Xhold)
 
 fn.one.rep.tHierModel(y, X, v1, v2, bstar, Beta, betalMat, vlList, Z, mu_rho,
   psi_rho, rho, step_logbstar, mu_rho_step, psi_rho_step, rho_step, step_Z)
@@ -65,13 +74,39 @@ hier_TLm(y, X, nkeep = 10000, nburn = 1000, mu0, Sigma0, a0, b0, mu_bstr,
 
 \item{scaleEst}{Scale estimator on which to condition('Huber' is only option here)}
 
-\item{nu}{fixed degrees of freedom for assumed t-distribution}
+\item{betalsamples}{the array of betals: in the specific format: the 3rd dimension is the groups. columns represent samples, row represent slopes}
+
+\item{yhold}{list of holdout samples}
+
+\item{Xhold}{list of design matrices}
+
+\item{mean}{center of t distribution}
+
+\item{sigma}{scale of t distribution}
+
+\item{nu}{degrees of freedom}
 
 \item{sigma2Int}{is the vector of sigma2i initial values}
 
 \item{mu0:}{prior mean of each beta}
 
 \item{v1, v2}{parameters for beta on b_start. mu_bstr is the mean and psi_bstr (originally had a prior) is the precision of the beta prior for b^*}
+
+\item{sigma2lsamples:}{columns represnt groups, rows represent samples}
+
+\item{y}{data}
+
+\item{betalsamples}{the array of betals: in the specific format: the 3rd dimension is the groups. columns represent samples, row represent slopes}
+
+\item{sigma2lsamples:}{columns represnt groups, rows represent samples}
+
+\item{yhold}{list of holdout samples}
+
+\item{Xhold}{list of design matrices}
+
+\item{nu}{degrees of freedom in t model}
+
+\item{nu}{fixed degrees of freedom for assumed t-distribution}
 }
 \description{
 MCMC functions for the hierarchical versions of Normal Theory Model, corresponding restricted version, and heavy-tailed version used in the paper.
