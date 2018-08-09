@@ -10,7 +10,7 @@ fn.sample.beta.lTmodel(yl, Xl, SigmaVlInv, Beta, bstar, Sigma0Inv)
 
 fn.sample.v.lTmodel(yl, Xl, betal, sigma2l)
 
-fn.one.rep.betasAndVs(y, X, Beta, sigma2, betalMat, vlList, bstar)
+fn.one.rep.betasAndVs(y, X, Beta, sigma2, betalMat, vlList, bstar, Sigma0Inv)
 }
 \arguments{
 \item{yl, Xl}{desc}

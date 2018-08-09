@@ -33,7 +33,7 @@ fn.sample.v.lTmodel<-function(yl, Xl,betal,sigma2l){
   as.vector(((yl-Xl%*%betal)^2+nu*sigma2l)/rchisq(nl,nu+1))
 }
 #' @rdname beta_ls_t
-fn.one.rep.betasAndVs<-function(y, X,Beta,sigma2,betalMat, vlList,bstar){
+fn.one.rep.betasAndVs<-function(y, X,Beta,sigma2,betalMat, vlList,bstar, Sigma0Inv){
   for(l in 1:ncol(betalMat)){
     yl<-y[[l]]
     Xl<-X[[l]]
