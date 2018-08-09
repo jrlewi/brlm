@@ -6,9 +6,9 @@
 \alias{fn.compute.quad2}
 \title{quad1 and qaud2}
 \usage{
-fn.compute.quad1(Beta, mu0)
+fn.compute.quad1(Beta, mu0, Sigma0Inv)
 
-fn.compute.quad2(Beta, betalMat)
+fn.compute.quad2(Beta, betalMat, Sigma0Inv)
 }
 \arguments{
 \item{Beta}{Beta}

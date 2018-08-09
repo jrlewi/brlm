@@ -137,7 +137,8 @@ fn.one.rep.tHierModel<-function(y,
                                 mu_rho_step,
                                 psi_rho_step,
                                 rho_step,
-                                step_Z
+                                step_Z,
+                                Sigma0Inv
 ){ #y, X are list of group level responses
   #fn.one.rep.beta.l loops through for each beta.l
   #[beta_i|-]
@@ -161,8 +162,8 @@ fn.one.rep.tHierModel<-function(y,
   #  psi_bstr<-fn.sample.psibstr(psi_bstr,mu_bstr, bstar)
 
   #[bstar|-]
-  quad1<-fn.compute.quad1(Beta, mu0)
-  quad2<-fn.compute.quad2(Beta, betalMat)
+  quad1<-fn.compute.quad1(Beta, mu0, Sigma0Inv)
+  quad2<-fn.compute.quad2(Beta, betalMat,  Sigma0Inv)
   bstar<-fn.sample.bstar(bstar,v1,v2,quad1,quad2,K=nGroups,p, step_logbstar)
   #[mu_rho|-]
   mu_rho<-fn.sample.mu_rho(mu_rho,psi_rho, rho, mu_rho_step)
@@ -293,7 +294,8 @@ hier_TLm<-function(y,
                                 mu_rho_step,
                                 psi_rho_step,
                                 rho_step,
-                                step_Z)
+                                step_Z,
+                                Sigma0Inv)
     #update temp values
     Beta<-samp$Beta
     betalMat<-samp$betalMat

@@ -13,7 +13,7 @@
 \title{MCMC functions for the hierarchical versions of Normal Theory Model, corresponding restricted version, and heavy-tailed version used in the paper.}
 \usage{
 fn.hier.one.rep(y, X, XtX, v1, v2, bstar, Beta, betalMat, Z, mu_rho, psi_rho,
-  rho, step_logbstar, mu_rho_step, psi_rho_step, rho_step, step_Z)
+  rho, step_logbstar, mu_rho_step, psi_rho_step, rho_step, step_Z, Sigma0Inv)
 
 hierNormTheoryLm(y, X, nkeep = 10000, nburn = 1000, mu0, Sigma0, a0, b0,
   mu_bstr, psi_bstr, swSq = 1, w1, w2, a_psir, b_psir, step_logbstar,
@@ -31,7 +31,8 @@ tdensity(y, mean, sigma, nu)
 fn.compute.marginals.hierModelTmodel(betalsamples, sigma2lsamples, yhold, Xhold)
 
 fn.one.rep.tHierModel(y, X, v1, v2, bstar, Beta, betalMat, vlList, Z, mu_rho,
-  psi_rho, rho, step_logbstar, mu_rho_step, psi_rho_step, rho_step, step_Z)
+  psi_rho, rho, step_logbstar, mu_rho_step, psi_rho_step, rho_step, step_Z,
+  Sigma0Inv)
 
 hier_TLm(y, X, nkeep = 10000, nburn = 1000, mu0, Sigma0, a0, b0, mu_bstr,
   psi_bstr, swSq = 1, w1, w2, a_psir, b_psir, nu, step_logbstar, mu_rho_step,
