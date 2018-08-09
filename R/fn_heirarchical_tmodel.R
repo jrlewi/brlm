@@ -216,28 +216,28 @@ hier_TLm<-function(y,
                         rho_step,
                         step_Z
 ){
-  mu0<<-mu0
-  Sigma0<<-Sigma0
-  a0<<-a0
-  b0<<-b0
-  #alpha_mustr<<-alpha_mustr
-  #beta_mustr<<-beta_mustr
-  #a_psib<<-a_psib
-  #b_psib<<-b_psib
-  v12<<-fn.compute.ab(mu_bstr,psi_bstr)
-  v1<<-v12[1]
-  v2<<-v12[2]
-  swSq<<-swSq
-  w1<<-w1; w2<<-w2
-  a_psir<<-a_psir
-  b_psir<<-b_psir
+  mu0<-mu0
+  Sigma0<-Sigma0
+  a0<-a0
+  b0<-b0
+  #alpha_mustr<-alpha_mustr
+  #beta_mustr<-beta_mustr
+  #a_psib<-a_psib
+  #b_psib<-b_psib
+  v12<-fn.compute.ab(mu_bstr,psi_bstr)
+  v1<-v12[1]
+  v2<-v12[2]
+  swSq<-swSq
+  w1<-w1; w2<-w2
+  a_psir<-a_psir
+  b_psir<-b_psir
   ############
   #XtX<-lapply(X, FUN=function(X) t(X)%*%X)
-  p<<-length(mu0) #the number of reg. coefficients per group
-  pTot<<-length(X)*p
-  ni<<-sapply(y, length, simplify=TRUE)
-  nGroups<<-pTot/p
-  Sigma0Inv<<-solve(Sigma0)
+  p<-length(mu0) #the number of reg. coefficients per group
+  pTot<-length(X)*p
+  ni<-sapply(y, length, simplify=TRUE)
+  nGroups<-pTot/p
+  Sigma0Inv<-solve(Sigma0)
   total<-nkeep+nburn
   #initialize outputs
   #list of betaSamples: each element of list is betaSamples from corresponding group

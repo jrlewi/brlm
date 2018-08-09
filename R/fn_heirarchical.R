@@ -508,28 +508,28 @@ hierNormTheoryLm<-function(y,
                            rho_step,
                            step_Z
 ){
-  mu0<<-mu0
-  Sigma0<<-Sigma0
-  a0<<-a0
-  b0<<-b0
-  #alpha_mustr<<-alpha_mustr
-  #beta_mustr<<-beta_mustr
-  #a_psib<<-a_psib
-  #b_psib<<-b_psib
-  v12<<-fn.compute.ab(mu_bstr,psi_bstr)
-  v1<<-v12[1]
-  v2<<-v12[2]
-  swSq<<-swSq
-  w1<<-w1; w2<<-w2
-  a_psir<<-a_psir
-  b_psir<<-b_psir
+  mu0<-mu0
+  Sigma0<-Sigma0
+  a0<-a0
+  b0<-b0
+  #alpha_mustr<-alpha_mustr
+  #beta_mustr<-beta_mustr
+  #a_psib<-a_psib
+  #b_psib<-b_psib
+  v12<-fn.compute.ab(mu_bstr,psi_bstr)
+  v1<-v12[1]
+  v2<-v12[2]
+  swSq<-swSq
+  w1<-w1; w2<-w2
+  a_psir<-a_psir
+  b_psir<-b_psir
   ############
   XtX<-lapply(X, FUN=function(X) t(X)%*%X)
-  p<<-length(mu0) #the number of reg. coefficients per group
-  pTot<<-length(X)*p
-  #n<<-length(unlist(y))
-  nGroups<<-pTot/p
-  Sigma0Inv<<-solve(Sigma0)
+  p<-length(mu0) #the number of reg. coefficients per group
+  pTot<-length(X)*p
+  #n<-length(unlist(y))
+  nGroups<-pTot/p
+  Sigma0Inv<-solve(Sigma0)
   total<-nkeep+nburn
   #initialize outputs
   #list of betaSamples: each element of list is betaSamples from corresponding group
@@ -658,29 +658,29 @@ hierNormTheoryRestLm <- function(y,
   #X is the design Matrix-a list of the design matrices Xi for each group
   #X[[i]] is the design matrix for each group
 
-  mu0<<-mu0
-  Sigma0<<-Sigma0
-  a0<<-a0
-  b0<<-b0
-  #alpha_mustr<<-alpha_mustr
-  #beta_mustr<<-beta_mustr
-  #a_psib<<-a_psib
-  #b_psib<<-b_psib
-  swSq<<-swSq
-  w1<<-w1; w2<<-w2
-  a_psir<<-a_psir
-  b_psir<<-b_psir
-  v12<<-fn.compute.ab(mu_bstr,psi_bstr)
-  v1<<-v12[1]
-  v2<<-v12[2]
+  mu0<-mu0
+  Sigma0<-Sigma0
+  a0<-a0
+  b0<-b0
+  #alpha_mustr<-alpha_mustr
+  #beta_mustr<-beta_mustr
+  #a_psib<-a_psib
+  #b_psib<-b_psib
+  swSq<-swSq
+  w1<-w1; w2<-w2
+  a_psir<-a_psir
+  b_psir<-b_psir
+  v12<-fn.compute.ab(mu_bstr,psi_bstr)
+  v1<-v12[1]
+  v2<-v12[2]
   ############
   projList=NULL #leave this as null; projection onto deviation space for each group
   XtX<-lapply(X, FUN=function(X) t(X)%*%X)
-  p<<-length(mu0) #the number of reg. coefficients per group
-  pTot<<-length(X)*p
-  ni<<-sapply(y, length)
-  nGroups<<-pTot/p
-  Sigma0Inv<<-solve(Sigma0)
+  p<-length(mu0) #the number of reg. coefficients per group
+  pTot<-length(X)*p
+  ni<-sapply(y, length)
+  nGroups<-pTot/p
+  Sigma0Inv<-solve(Sigma0)
   total<-nkeep+nburn
   #initialize outputs
   #list of betaSamples: each element of list is betaSamples from corresponding group
@@ -912,9 +912,9 @@ tdensity<-function(y, mean, sigma, nu){
 #' @param Xhold list of design matrices
 #' @param nu degrees of freedom in t model
 #' @export
-fn.compute.marginals.hierModelTmodel<-function(betalsamples, sigma2lsamples, yhold,Xhold){
-  #betalsamples the array of betals: in the specific format: the 3rd dimension is the groups. columns represent samples, row represent slopes
-  #sigma2lsampls: #columns represnt groups, rows represent samples
+fn.compute.marginals.hierModelTmodel <- function(betalsamples, sigma2lsamples, yhold,Xhold){
+
+  fits<-function(betahats, X){X%*%betahats}
 
   betalSampsList<-lapply(1:dim(betalsamples)[3],function(x) betalsamples[,,x])
   names(betalSampsList)<-names(yhold)
