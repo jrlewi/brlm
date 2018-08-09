@@ -20,7 +20,7 @@
 #' @param betal
 #' @param sigma2l
 #' @details Sampling beta.l and v.l for the T-model. fn.one.rep.betasAndVs puts the two together to sample both for all groups.
-fn.sample.beta.lTmodel<-function(yl, Xl,SigmaVlInv,Beta,bstar){
+fn.sample.beta.lTmodel<-function(yl, Xl,SigmaVlInv,Beta,bstar, Sigma0Inv){
   b<-bstar/swSq
   Sigma.betal<-solve(t(Xl)%*%SigmaVlInv%*%Xl+Sigma0Inv/b)
   mu.l<-Sigma.betal%*%(t(Xl)%*%SigmaVlInv%*%yl+Sigma0Inv%*%Beta/b)
@@ -40,7 +40,7 @@ fn.one.rep.betasAndVs<-function(y, X,Beta,sigma2,betalMat, vlList,bstar){
     vis<-vlList[[l]]
     SigmaVlInv<-diag(1/vis)
     sigma2l<-sigma2[l]
-    beta.l<-fn.sample.beta.lTmodel(yl, Xl,SigmaVlInv,Beta,bstar)
+    beta.l<-fn.sample.beta.lTmodel(yl, Xl,SigmaVlInv,Beta,bstar, Sigma0Inv)
     betalMat[,l]<-beta.l
     vsl<-fn.sample.v.lTmodel(yl, Xl,beta.l,sigma2l)
     vlList[[l]]<-vsl

@@ -149,20 +149,20 @@ fn.sample.Beta<-function(betalMat,bstar){
 #' @param bstar b=b^*/swSq
 #' @param Beta Beta
 #' @details Sigma0Inv: fixed  loop through for each group and do sampling for each group beta
-fn.sample.beta.l<-function(yl, Xl,XtX.l,Beta,sigma2l,bstar){
+fn.sample.beta.l<-function(yl, Xl,XtX.l,Beta,sigma2l,bstar, Sigma0Inv){
   b<-bstar/swSq
   Sigma.betal<-solve(XtX.l/(sigma2l)+Sigma0Inv/b)
   mu.l<-Sigma.betal%*%(crossprod(Xl,yl)/(sigma2l)+Sigma0Inv%*%Beta/b)
   mvrnorm(1, mu.l, Sigma.betal)
 }
 #' @rdname beta_ls
-fn.one.rep.beta.l<-function(y, X,XtX,Beta,sigma2,bstar,betalMat){
+fn.one.rep.beta.l<-function(y, X,XtX,Beta,sigma2,bstar,betalMat, Sigma0Inv){
   for(l in 1:ncol(betalMat)){
     yl<-y[[l]]
     Xl<-X[[l]]
     XtX.l<-XtX[[l]]
     sigma2l<-sigma2[l]
-    beta.l<-fn.sample.beta.l(yl, Xl,XtX.l,Beta,sigma2l,bstar)
+    beta.l<-fn.sample.beta.l(yl, Xl,XtX.l,Beta,sigma2l,bstar, Sigma0Inv)
     betalMat[,l]<-beta.l
   }
   betalMat
@@ -447,7 +447,7 @@ fn.hier.one.rep<-function(y,
   #fn.one.rep.beta.l loops through for each beta.l
   #[beta_i|-]
   sigma2<-fn.compute.sigma2(Z,a0,b0)
-  betalMat<-fn.one.rep.beta.l(y, X,XtX,Beta,sigma2,bstar,betalMat)
+  betalMat<-fn.one.rep.beta.l(y, X,XtX,Beta,sigma2,bstar,betalMat, Sigma0Inv)
   #[Z|-] i.e. the sigma2_is
   #fn.one.rep.Z loops through for all the z_i
   Z<-fn.one.rep.Z(Z, y,X, betalMat, rho,step=step_Z)

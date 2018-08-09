@@ -6,7 +6,7 @@
 \alias{fn.one.rep.betasAndVs}
 \title{Sampling for beta_l's and v_ls in hierarchical T-model}
 \usage{
-fn.sample.beta.lTmodel(yl, Xl, SigmaVlInv, Beta, bstar)
+fn.sample.beta.lTmodel(yl, Xl, SigmaVlInv, Beta, bstar, Sigma0Inv)
 
 fn.sample.v.lTmodel(yl, Xl, betal, sigma2l)
 

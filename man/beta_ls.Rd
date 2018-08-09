@@ -7,9 +7,9 @@
 \title{Sampling for beta_l's in hierarchical model
 5. [beta_l|-] l=1,..,nGroups}
 \usage{
-fn.sample.beta.l(yl, Xl, XtX.l, Beta, sigma2l, bstar)
+fn.sample.beta.l(yl, Xl, XtX.l, Beta, sigma2l, bstar, Sigma0Inv)
 
-fn.one.rep.beta.l(y, X, XtX, Beta, sigma2, bstar, betalMat)
+fn.one.rep.beta.l(y, X, XtX, Beta, sigma2, bstar, betalMat, Sigma0Inv)
 }
 \arguments{
 \item{yl, Xl}{these are the responses and design matrix for the lth group}
