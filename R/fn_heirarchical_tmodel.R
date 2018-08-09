@@ -144,7 +144,7 @@ fn.one.rep.tHierModel<-function(y,
   #[beta_i|-]
   sigma2<-fn.compute.sigma2(Z,a0,b0)
 
-  betalVSamp<-fn.one.rep.betasAndVs(y, X,Beta,sigma2,betalMat, vlList,bstar)
+  betalVSamp<-fn.one.rep.betasAndVs(y, X,Beta,sigma2,betalMat, vlList,bstar, Sigma0Inv)
   betalMat<-betalVSamp$betalMat
   vlList<-betalVSamp$vlList
 
