@@ -567,7 +567,7 @@ hierNormTheoryLm<-function(y,
 
 
   for(iter in 1:total){
-    samp<-  fn.hier.one.rep(y,
+    samp <- fn.hier.one.rep(y,
                           X,
                           XtX,
                           v1,#mu_bstr,
