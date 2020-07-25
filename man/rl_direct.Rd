@@ -4,8 +4,20 @@
 \alias{rl_direct}
 \title{Fitting restricted likelihood location-scale model using direct evaluation.}
 \usage{
-rl_direct(y, statistic, eta, tau, alpha, beta, mu_lims, sigma2_lims, length_mu,
-  length_sigma2, smooth = 1, N)
+rl_direct(
+  y,
+  statistic,
+  eta,
+  tau,
+  alpha,
+  beta,
+  mu_lims,
+  sigma2_lims,
+  length_mu,
+  length_sigma2,
+  smooth = 1,
+  N
+)
 }
 \arguments{
 \item{y}{vector of data}

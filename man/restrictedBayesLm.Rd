@@ -4,8 +4,20 @@
 \alias{restrictedBayesLm}
 \title{MCMC algorithm for Restricted Likelihood Bayesian Linear Model}
 \usage{
-restrictedBayesLm(y, X, regEst = "Huber", scaleEst = "Huber", mu0, Sigma0,
-  a0, b0, sigma2Int, nkeep = 10000, nburn = 1000, maxit = 400)
+restrictedBayesLm(
+  y,
+  X,
+  regEst = "Huber",
+  scaleEst = "Huber",
+  mu0,
+  Sigma0,
+  a0,
+  b0,
+  sigma2Int,
+  nkeep = 10000,
+  nburn = 1000,
+  maxit = 400
+)
 }
 \arguments{
 \item{y}{vector of repsonse}

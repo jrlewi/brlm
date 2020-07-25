@@ -5,8 +5,15 @@
 \title{Compute y**
 Computes y** from a proposed y* value}
 \usage{
-fn.comp.ystst(yst, X, l1obs, s1obs, psi = psi.huber, scale.est = "Huber",
-  maxit = 400)
+fn.comp.ystst(
+  yst,
+  X,
+  l1obs,
+  s1obs,
+  psi = psi.huber,
+  scale.est = "Huber",
+  maxit = 400
+)
 }
 \arguments{
 \item{yst}{data vector to be transformed to ystst satisfying the observed summary statistics}

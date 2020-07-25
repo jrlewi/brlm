@@ -4,9 +4,24 @@
 \alias{rlImportSamp}
 \title{Fitting restricted likelihood model using importance sampling technique.}
 \usage{
-rlImportSamp(X, y, psi, scale.est = "Huber", k2 = 1.345, mu0, Sigma0, alpha,
-  beta, instDist = NULL, sdInstDist = NULL, smooth = 1, N, Nins,
-  maxit = 1000, ...)
+rlImportSamp(
+  X,
+  y,
+  psi,
+  scale.est = "Huber",
+  k2 = 1.345,
+  mu0,
+  Sigma0,
+  alpha,
+  beta,
+  instDist = NULL,
+  sdInstDist = NULL,
+  smooth = 1,
+  N,
+  Nins,
+  maxit = 1000,
+  ...
+)
 }
 \arguments{
 \item{X}{a matrix or data frame containing the explanatory variables. The matrix should include a vector of 1's if intercept is desired.}

@@ -3,8 +3,4 @@
 \docType{package}
 \name{brlm}
 \alias{brlm}
-\alias{brlm-package}
 \title{brlm: A package for implementing Bayesian Restricted Likelihood Methods.}
-\description{
-brlm: A package for implementing Bayesian Restricted Likelihood Methods.
-}

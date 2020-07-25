@@ -5,11 +5,38 @@
 \alias{fn.one.rep.y2}
 \title{Perform a single Metropolis-Hastings step}
 \usage{
-fn.one.rep.y(y.curr, Beta, sig, l1obs, s1obs, X, log.prop.den.curr, proj,
-  fn.psi, fn.chi, psi, scaleEst, maxit = 400)
+fn.one.rep.y(
+  y.curr,
+  Beta,
+  sig,
+  l1obs,
+  s1obs,
+  X,
+  log.prop.den.curr,
+  proj,
+  fn.psi,
+  fn.chi,
+  psi,
+  scaleEst,
+  maxit = 400
+)
 
-fn.one.rep.y2(y.curr, Beta, sig, l1obs, s1obs, X, log.prop.den.curr, proj, Qt,
-  fn.psi, fn.chi, psi, scaleEst, maxit = 400)
+fn.one.rep.y2(
+  y.curr,
+  Beta,
+  sig,
+  l1obs,
+  s1obs,
+  X,
+  log.prop.den.curr,
+  proj,
+  Qt,
+  fn.psi,
+  fn.chi,
+  psi,
+  scaleEst,
+  maxit = 400
+)
 }
 \arguments{
 \item{y.curr}{current data vector}

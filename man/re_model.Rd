@@ -4,8 +4,17 @@
 \alias{re_model}
 \title{Fit the Normal Theory Random Effects Model}
 \usage{
-re_model(Y, mu_0, sigma2_0, alpha_t, beta_t, alpha_s, beta_s, nkeep = 1000,
-  nburn = 1000)
+re_model(
+  Y,
+  mu_0,
+  sigma2_0,
+  alpha_t,
+  beta_t,
+  alpha_s,
+  beta_s,
+  nkeep = 1000,
+  nburn = 1000
+)
 }
 \arguments{
 \item{Y}{list; jth element is a vector of the y_ij}

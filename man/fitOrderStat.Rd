@@ -4,8 +4,18 @@
 \alias{fitOrderStat}
 \title{Restricted likelihood Bayesian model using a middle set of order statistics to define the restricted likelihood.}
 \usage{
-fitOrderStat(y, k, mu_lims, length_mu, sigma2_lims, length_sigma2, eta, tau,
-  alpha, beta)
+fitOrderStat(
+  y,
+  k,
+  mu_lims,
+  length_mu,
+  sigma2_lims,
+  length_sigma2,
+  eta,
+  tau,
+  alpha,
+  beta
+)
 }
 \arguments{
 \item{y}{vector of data}

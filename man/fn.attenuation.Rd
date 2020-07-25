@@ -5,11 +5,26 @@
 \alias{fn.attenuation2}
 \title{Computes attenuation factor}
 \usage{
-fn.attenuation(ystst, X, proj, l1obs, s1obs, fn.psi = fn.psi.huber,
-  fn.chi = fn.chi.prop2)
+fn.attenuation(
+  ystst,
+  X,
+  proj,
+  l1obs,
+  s1obs,
+  fn.psi = fn.psi.huber,
+  fn.chi = fn.chi.prop2
+)
 
-fn.attenuation2(ystst, X, proj, Qt, l1obs, s1obs, fn.psi = fn.psi.huber,
-  fn.chi = fn.chi.prop2)
+fn.attenuation2(
+  ystst,
+  X,
+  proj,
+  Qt,
+  l1obs,
+  s1obs,
+  fn.psi = fn.psi.huber,
+  fn.chi = fn.chi.prop2
+)
 }
 \arguments{
 \item{ystst}{a data vector such that T(ystst)=T(y_obs)}

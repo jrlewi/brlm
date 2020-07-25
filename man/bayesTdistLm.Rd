@@ -4,8 +4,19 @@
 \alias{bayesTdistLm}
 \title{MCMC algorithm for Heavy Tailed (t-distribution) Bayesian Linear Model}
 \usage{
-bayesTdistLm(y, X, mu0, Sigma0, a0, b0, parInit = NULL, nu, nkeep = 10000,
-  nburn = 1000, rwTune = NULL)
+bayesTdistLm(
+  y,
+  X,
+  mu0,
+  Sigma0,
+  a0,
+  b0,
+  parInit = NULL,
+  nu,
+  nkeep = 10000,
+  nburn = 1000,
+  rwTune = NULL
+)
 }
 \arguments{
 \item{y}{vector of repsonse}

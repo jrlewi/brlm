@@ -4,8 +4,19 @@
 \alias{fitMixture}
 \title{A standard Bayesian mixture model for outliers using a mixture of two normal distributions for the likelihood.}
 \usage{
-fitMixture(y, theta.lims, length.theta, sigma2.lims, length.sigma2, mu, tau,
-  alpha, beta, p, c)
+fitMixture(
+  y,
+  theta.lims,
+  length.theta,
+  sigma2.lims,
+  length.sigma2,
+  mu,
+  tau,
+  alpha,
+  beta,
+  p,
+  c
+)
 }
 \arguments{
 \item{y}{vector of data}

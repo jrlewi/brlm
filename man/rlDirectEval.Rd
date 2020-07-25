@@ -4,9 +4,24 @@
 \alias{rlDirectEval}
 \title{Fitting restricted likelihood location-scale model using direct evaluation.}
 \usage{
-rlDirectEval(y, psi, ..., scale.est = "Huber", k2 = 1.345, eta, tau, alpha,
-  beta, mu_lims, sigma2_lims, length_mu, length_sigma2, smooth = 1, N,
-  maxit = 1000)
+rlDirectEval(
+  y,
+  psi,
+  ...,
+  scale.est = "Huber",
+  k2 = 1.345,
+  eta,
+  tau,
+  alpha,
+  beta,
+  mu_lims,
+  sigma2_lims,
+  length_mu,
+  length_sigma2,
+  smooth = 1,
+  N,
+  maxit = 1000
+)
 }
 \arguments{
 \item{y}{vector of data}

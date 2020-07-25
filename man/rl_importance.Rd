@@ -4,8 +4,20 @@
 \alias{rl_importance}
 \title{Fitting restricted likelihood model using importance sampling technique.}
 \usage{
-rl_importance(y, X, statistic, mu0, Sigma0, alpha, beta, cov_b, scale,
-  smooth = 1, N, Nins)
+rl_importance(
+  y,
+  X,
+  statistic,
+  mu0,
+  Sigma0,
+  alpha,
+  beta,
+  cov_b,
+  scale,
+  smooth = 1,
+  N,
+  Nins
+)
 }
 \arguments{
 \item{y}{vector of data}
