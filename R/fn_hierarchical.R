@@ -350,7 +350,7 @@ fn.compute.Z<-function(sigma2,a0,b0){
 fn.hat<-function(Xl, betal) {Xl%*%betal}
 #' @rdname z_l
 fn.logLike.zl<-function(zl,zminus, yl, fitsl, condsd,condMeanMult){
-  #zl is the compenent I am updating, zminus is all other components; condsd is the condition sd for the conditional normal (zl|zminus): this depends only on current
+  #zl is the component I am updating, zminus is all other components; condsd is the condition sd for the conditional normal (zl|zminus): this depends only on current
   #condMeanMult%*%zminus is the conditional mean for zl|zminus
   condMean<-condMeanMult%*%zminus
   sigma2l<-fn.compute.sigma2(zl,a0,b0)
