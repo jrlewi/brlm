@@ -442,16 +442,20 @@ fn.hier.one.rep<-function(y,
                           psi_rho_step,
                           rho_step,
                           step_Z,
-                          Sigma0Inv
+                          Sigma0Inv,
+                          abc = FALSE
 ){ #y, X are list of group level responses
   #fn.one.rep.beta.l loops through for each beta.l
+  if(!abc){
   #[beta_i|-]
-  sigma2<-fn.compute.sigma2(Z,a0,b0)
-  betalMat<-fn.one.rep.beta.l(y, X,XtX,Beta,sigma2,bstar,betalMat, Sigma0Inv)
+  sigma2 <- fn.compute.sigma2(Z,a0,b0)
+  betalMat <- fn.one.rep.beta.l(y, X,XtX,Beta,sigma2,bstar,betalMat, Sigma0Inv)
   #[Z|-] i.e. the sigma2_is
   #fn.one.rep.Z loops through for all the z_i
-  Z<-fn.one.rep.Z(Z, y,X, betalMat, rho,step=step_Z)
-  sigma2<-fn.compute.sigma2(Z,a0,b0)
+  Z <- fn.one.rep.Z(Z, y,X, betalMat, rho,step=step_Z)
+  }
+
+  sigma2 <- fn.compute.sigma2(Z,a0,b0)
   #[Beta|-]
   Beta<-fn.sample.Beta(betalMat,bstar)
 
@@ -632,6 +636,10 @@ hierNormTheoryLm<-function(y,
 #' @inheritParams hierNormTheoryLm
 #' @param regEst Regression estimator on which to condition . Either Huber or Tukey.
 #' @param scaleEst Scale estimator on which to condition('Huber' is only option here)
+#' @param abc new option, defaults to FALSE, if TRUE then an Approximate Bayesian
+#' Computation method version is fit
+#' @param bandwidth for the abc kernel
+#' @details for abc version method - see ()
 #' @export
 hierNormTheoryRestLm <- function(y,
                                 X,
@@ -654,11 +662,17 @@ hierNormTheoryRestLm <- function(y,
                                 mu_rho_step,
                                 psi_rho_step,
                                 rho_step,
-                                step_Z)
+                                step_Z,
+                                abc = FALSE,
+                                bandwidth=NULL)
 {
   #y is a list of the responses for each group
   #X is the design Matrix-a list of the design matrices Xi for each group
   #X[[i]] is the design matrix for each group
+
+  if(abc & is.null(bandwidth)){
+    stop("abc cannot be set to TRUE with a null bandwidth parameter")
+  }
 
   mu0<-mu0
   Sigma0<-Sigma0
@@ -752,6 +766,7 @@ hierNormTheoryRestLm <- function(y,
   #####################
   #choose starting value for yi
   #####################
+  if(!abc){
   log.prop.den.curr<-numeric(nGroups)
   yCurr<-list(); length(yCurr)<-nGroups
   for(i in 1:nGroups){
@@ -777,6 +792,10 @@ hierNormTheoryRestLm <- function(y,
     yCurri<-yCurri
     yCurr[[i]]<-yCurri
     log.prop.den.curr[i]<-log.prop.den2(yCurri,Xi, proji,Qti,bHatObsi, sigHatObsi,fn.psi, fn.chi,ni[i],p)
+    }
+  } else {
+    #for abc version
+    yCurr <- y
   }
 
 
@@ -803,12 +822,17 @@ hierNormTheoryRestLm <- function(y,
                           psi_rho_step,
                           rho_step,
                           step_Z,
-                          Sigma0Inv)
+                          Sigma0Inv,
+                          abc = abc)
     #update temp values
-    Beta<-samp$Beta
+    # if abc, these will be the same as what was input
+    if(!abc){
     betalMat<-samp$betalMat
     Z<-samp$Z
     sigma2<-samp$sigma2
+    }
+
+    Beta<-samp$Beta
     #mu_bstr<-samp$mu_bstr
     #psi_bstr<-samp$psi_bstr
     bstar<-samp$bstar
@@ -817,8 +841,10 @@ hierNormTheoryRestLm <- function(y,
     rho<-samp$rho
     #update outputs
     BetaSamples[iter,]<-Beta
+    if(!abc){
     betaGroupSamples[,,iter]<-betalMat
     sigma2Samples[iter,]<-sigma2
+    }
     # mu_bstrSamples[iter]<-mu_bstr
     #psi_bstrSamples[iter]<-psi_bstr
     bstarSamples[iter]<-bstar
@@ -826,6 +852,7 @@ hierNormTheoryRestLm <- function(y,
     psi_rhoSamples[iter]<-psi_rho
     rhoSamples[iter]<-rho
 
+    if(!abc){
     #[y|everything + robust statistics] step; each group updated separately
     for(gp in 1:nGroups){
       yicurr<-yCurr[[gp]]
@@ -844,6 +871,23 @@ hierNormTheoryRestLm <- function(y,
       logprop.curr[iter,gp]<-ySample[[3]]
       yMhRatios[iter,gp]<-ySample[[4]]
     }
+    } else {
+      #sampling steps for abc
+        #update steps for beta_i's, sigma_i's (through the z's) and y_i's
+        #based on abc version
+        for(gp in 1:nGroups){
+          sample_ybs <- fn_abc_update_l()
+
+          ### code here.
+
+        }
+
+      }
+
+
+
+
+
   }
 
   out<-list()
