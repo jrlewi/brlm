@@ -713,6 +713,14 @@ hierNormTheoryRestLm <- function(y,
   logprop.curr<-matrix(NA,total,nGroups)
   yMhRatios<-matrix(NA,total,nGroups)
 
+  #saving the sampled statistics, if abc
+  # if(abc){
+  #   sampled_stats <- array(NA, c(p+1, nGroups, total))
+  # } else {
+  #   sampled_stats <- NA
+  # }
+
+
   #initial values
   #starting values of parameters
   #mu_bstr<-rbeta(1, alpha_mustr,beta_mustr)
@@ -728,7 +736,7 @@ hierNormTheoryRestLm <- function(y,
   rho<-runif(1, .1, .9)
   Sigma_rho<-(1-rho)*diag(nGroups)+matrix(1, nGroups,nGroups)*rho
   Z<-mvrnorm(1, rep(0,nGroups), Sigma_rho)
-
+  sigma2 <- fn.compute.sigma2(Z,a0,b0)
 
 
 
@@ -796,6 +804,10 @@ hierNormTheoryRestLm <- function(y,
   } else {
     #for abc version
     yCurr <- y
+    stats_current <- array(NA, c(p+1, nGroups))
+    for(i in 1:nGroups){
+      stats_current[, i] <- c(bHatObsList[[i]], sigHatObsList[[i]])
+    }
   }
 
 
@@ -875,19 +887,58 @@ hierNormTheoryRestLm <- function(y,
       #sampling steps for abc
         #update steps for beta_i's, sigma_i's (through the z's) and y_i's
         #based on abc version
+
         for(gp in 1:nGroups){
-          sample_ybs <- fn_abc_update_l()
 
-          ### code here.
+          fitsl <- fn.hat(X[[gp]], betalMat[,gp])
+          Sigma_rhoInvMinus<-fn.compute.SigmaRhoInv(rho, K=length(Z)-1)
+          rho_vec<-rep(rho, length(Z)-1)
+          condsd<-sqrt(1-t(rho_vec)%*%Sigma_rhoInvMinus%*%rho_vec)
+          condMeanMult<-t(rho_vec)%*%Sigma_rhoInvMinus
 
+          stat_obs <- c(bHatObsList[[gp]],
+                        sigHatObsList[[gp]])
+
+          params <- list(
+            zl = Z[gp],
+            zminus  = Z[-gp],
+            yl = yCurr[[gp]],
+            fitsl = fitsl,
+            condsd = condsd,
+            condMeanMult = condMeanMult,
+            stepzl = step_Z[gp],
+            a0 = a0,
+            b0 = b0,
+            Xl = X[[gp]],
+            XtX.l = XtX[[gp]],
+            Beta = Beta,
+            bstar = bstar,
+            Sigma0Inv = Sigma0Inv
+          )
+
+          current <- list(yl=yCurr[[gp]],
+                          betal = betalMat[,gp],
+                          sigma2l = sigma2[gp],
+                          zl = Z[gp],
+                          statistic = stats_current[, gp])
+
+          tol = bandwidth[gp]
+
+          update <- mh_abc_group(params, current, Xl=X[[gp]], stat_obs = stat_obs, tol = tol)
+
+          yAccept[iter,gp] <- update$accept
+          sample <- update$sample
+          yCurr[[gp]]<-sample$yl
+          betalMat[, gp] <- sample$betal
+          sigma2[gp] <- sample$sigma2l
+          Z[gp] <- sample$zl
+          stats_current[, gp] <- update$statistic
         }
 
+      betaGroupSamples[,,iter] <- betalMat
+      sigma2Samples[iter,] <- sigma2
+
       }
-
-
-
-
-
   }
 
   out<-list()
