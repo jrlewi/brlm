@@ -186,7 +186,8 @@ Computation method version is fit}
 
 \item{scaleEst}{Scale estimator on which to condition('Huber' is only option here)}
 
-\item{bandwidth}{for the abc kernel}
+\item{bandwidth}{for the abc kernel, scalar or vector of length(X) specifying the
+abc bandwidth for each group.}
 
 \item{betalsamples}{the array of betals: in the specific format: the 3rd dimension is the groups. columns represent samples, row represent slopes}
 

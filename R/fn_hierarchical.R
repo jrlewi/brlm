@@ -931,7 +931,8 @@ hierNormTheoryRestLm <- function(y,
 
           tol = bandwidth[gp]
 
-          update <- mh_abc_group(params, current, Xl=X[[gp]], stat_obs = stat_obs, tol = tol)
+          update <- mh_abc_group(params, current, Xl=X[[gp]], stat_obs = stat_obs, tol = tol,
+                                 psi = psi, scaleEst = scaleEst, maxit = maxit)
 
           yAccept[iter,gp] <- update$accept
           sample <- update$sample
@@ -939,7 +940,7 @@ hierNormTheoryRestLm <- function(y,
           betalMat[, gp] <- sample$betal
           sigma2[gp] <- sample$sigma2l
           Z[gp] <- sample$zl
-          stats_current[, gp] <- update$statistic
+          stats_current[, gp] <- sample$statistic
         }
 
       betaGroupSamples[,,iter] <- betalMat
@@ -958,7 +959,6 @@ hierNormTheoryRestLm <- function(y,
   out$mu_rho<-mu_rhoSamples[-c(1:nburn)]
   out$psi_rho<-psi_rhoSamples[-c(1:nburn)]
   out$rho<-rhoSamples[-c(1:nburn)]
-  #   out$yAccept<-yAccept #colMeans(yAccept)
   out$yAccept<-colMeans(yAccept)
   out$rlmFits<-robustList
   hypers<-c(a0,b0,swSq,w1,w2,a_psir,b_psir, mu_bstr,psi_bstr)
