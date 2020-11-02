@@ -638,7 +638,8 @@ hierNormTheoryLm<-function(y,
 #' @param scaleEst Scale estimator on which to condition('Huber' is only option here)
 #' @param abc new option, defaults to FALSE, if TRUE then an Approximate Bayesian
 #' Computation method version is fit
-#' @param bandwidth for the abc kernel
+#' @param bandwidth for the abc kernel, scalar or vector of length(X) specifying the
+#' abc bandwidth for each group.
 #' @details for abc version method - see ()
 #' @export
 hierNormTheoryRestLm <- function(y,
@@ -672,6 +673,12 @@ hierNormTheoryRestLm <- function(y,
 
   if(abc & is.null(bandwidth)){
     stop("abc cannot be set to TRUE with a null bandwidth parameter")
+  }
+  if(abc & (length(bandwidth) == 1)){
+    bandwidth <- rep(bandwidth, length(X))
+  }
+  if(abc & (length(bandwidth) != length(X))){
+    stop("if bandwidth is not a scalar, its length must match the number of groups.")
   }
 
   mu0<-mu0

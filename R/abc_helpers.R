@@ -38,6 +38,11 @@ proposal_group_abc <- function(params){
 
 
 stat_distance <- function(x, y){
+    p <- length(x)
+    if(p != length(y)) {stop("x,y, must be same length")}
+    #change sigma to log sigma
+    x[p_1] <- log(x[p])
+    y[p_1] <- log(y[p])
     sqrt(sum((x - y)^2))
 }
 
@@ -59,10 +64,17 @@ update_group_abc <- function(proposal, current, Xl, stat_obs, tol){
     stat_dist_prop <- stat_distance(stat_obs, stat_prop)
     stat_dist_current <- stat_distance(stat_obs, stat_curr)
 
-    rat1 <- dnorm(y_curr, Xl%*%beta_curr, sqrt(sigma2_curr))/
-                  dnorm(y_curr, Xl%*%beta_prop, sqrt(sigma2_prop))
-    rat2 <- abc_distance_kernel(stat_dist_prop, tol)/abc_distance_kernel(stat_dist_current, tol)
-    mh_rat <- min(1, rat1*rat2)
+    log_rat1 <- sum(dnorm(y_curr, Xl%*%beta_curr, sqrt(sigma2_curr),
+                          log = TRUE)) -
+                sum(dnorm(y_curr, Xl%*%beta_prop, sqrt(sigma2_prop),
+                          log = TRUE))
+
+    log_rat2 <- log(abc_distance_kernel(stat_dist_prop, tol)) -
+                log(abc_distance_kernel(stat_dist_current, tol))
+
+
+    mh_rat <- min(1, exp(rat1 + rat2))
+
     if(runif(1) < mh_rat){
       list(sample = proposal, accept = 1)
     } else {
