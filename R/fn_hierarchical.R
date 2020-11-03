@@ -665,7 +665,10 @@ hierNormTheoryRestLm <- function(y,
                                 rho_step,
                                 step_Z,
                                 abc = FALSE,
-                                bandwidth=NULL)
+                                bandwidth=NULL,
+                                iter_check = 1000,
+                                min_accept_rate = 0.1,
+                                bw_mult = 1.2)
 {
   #y is a list of the responses for each group
   #X is the design Matrix-a list of the design matrices Xi for each group
@@ -824,7 +827,7 @@ hierNormTheoryRestLm <- function(y,
   for(iter in 1:total){
 
     #[theta|everything] step
-    samp<-fn.hier.one.rep(yCurr,
+    samp <- fn.hier.one.rep(yCurr,
                           X,
                           XtX,
                           v1,#mu_bstr,
@@ -842,7 +845,8 @@ hierNormTheoryRestLm <- function(y,
                           rho_step,
                           step_Z,
                           Sigma0Inv,
-                          abc = abc)
+                          abc = abc
+                          )
     #update temp values
     # if abc, these will be the same as what was input
     if(!abc){
@@ -936,7 +940,7 @@ hierNormTheoryRestLm <- function(y,
 
           yAccept[iter,gp] <- update$accept
           sample <- update$sample
-          yCurr[[gp]]<-sample$yl
+          yCurr[[gp]] <- sample$yl
           betalMat[, gp] <- sample$betal
           sigma2[gp] <- sample$sigma2l
           Z[gp] <- sample$zl
@@ -945,25 +949,30 @@ hierNormTheoryRestLm <- function(y,
 
       betaGroupSamples[,,iter] <- betalMat
       sigma2Samples[iter,] <- sigma2
-
+      #step to check acceptance rates and increase bandwidth if
+      # they are small. only check that last several cases.
+      if (iter %/% iter_check == iter/iter_check) {
+        inds_to_check <- (iter - iter_check + 1):iter
+        recent_accept_rate <- apply(yAccept[inds_to_check, ], 2, mean, na.rm = TRUE)
+        increase_band_inds <- which(recent_accept_rate < min_accept_rate)
+        bandwidth[increase_band_inds] <- bw_mult*bandwidth[increase_band_inds]
+      }
       }
   }
 
-  out<-list()
-  out$Beta<-BetaSamples[-c(1:nburn),]
-  out$betal<-betaGroupSamples[,,-c(1:nburn)]
-  out$sigma2s<-sigma2Samples[-c(1:nburn),]
-  # out$mu_bstr<-mu_bstrSamples[-c(1:nburn)]
-  #  out$psi_bstr<-psi_bstrSamples[-c(1:nburn)]
-  out$bstar<-bstarSamples[-c(1:nburn)]
-  out$mu_rho<-mu_rhoSamples[-c(1:nburn)]
-  out$psi_rho<-psi_rhoSamples[-c(1:nburn)]
-  out$rho<-rhoSamples[-c(1:nburn)]
-  out$yAccept<-colMeans(yAccept)
-  out$rlmFits<-robustList
-  hypers<-c(a0,b0,swSq,w1,w2,a_psir,b_psir, mu_bstr,psi_bstr)
-  names(hypers)<-c("a0","b0","swSq",'w1',"w2","a_psir","b_psir", 'mu_bstr', "psi_bstr")
-  out$hypers<-hypers
+  out <- list()
+  out$Beta <- BetaSamples[-c(1:nburn),]
+  out$betal <- betaGroupSamples[,,-c(1:nburn)]
+  out$sigma2s <- sigma2Samples[-c(1:nburn),]
+  out$bstar <- bstarSamples[-c(1:nburn)]
+  out$mu_rho <- mu_rhoSamples[-c(1:nburn)]
+  out$psi_rho <- psi_rhoSamples[-c(1:nburn)]
+  out$rho <- rhoSamples[-c(1:nburn)]
+  out$yAccept <- colMeans(yAccept)
+  out$rlmFits <- robustList
+  hypers <- c(a0,b0,swSq,w1,w2,a_psir,b_psir, mu_bstr,psi_bstr)
+  names(hypers) <- c("a0","b0","swSq",'w1',"w2","a_psir","b_psir", 'mu_bstr', "psi_bstr")
+  out$hypers <- hypers
   out
 }
 
