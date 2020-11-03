@@ -4,8 +4,10 @@
 #'
 compute_statistics <- function(y, X, psi, scaleEst, maxit){
   robust <- MASS::rlm(X, y, psi = psi, scale.est = scaleEst, maxit = maxit)
-  c(robust$coef, robust$s)
-}
+  t_values <- as.numeric(summary(robust)$coefficients[, "t value"])
+  #c(robust$coef, robust$s)
+  c(t_values, robust$s)
+  }
 
 
 #' @rdname hier_abc

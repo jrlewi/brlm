@@ -82,7 +82,10 @@ hierNormTheoryRestLm(
   rho_step,
   step_Z,
   abc = FALSE,
-  bandwidth = NULL
+  bandwidth = NULL,
+  iter_check = 1000,
+  min_accept_rate = 0.1,
+  bw_mult = 1.2
 )
 
 fn.compute.marginals.hierModelNormal(
