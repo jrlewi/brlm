@@ -4,10 +4,10 @@
 #'
 compute_statistics <- function(y, X, psi, scaleEst, maxit){
   robust <- MASS::rlm(X, y, psi = psi, scale.est = scaleEst, maxit = maxit)
-  t_values <- as.numeric(summary(robust)$coefficients[, "t value"])
-  #c(robust$coef, robust$s)
-  c(t_values, robust$s)
+  c(robust$coef, robust$s)
   }
+
+
 
 
 #' @rdname hier_abc
@@ -29,10 +29,10 @@ proposal_group_abc <- function(params,
     Beta <- params$Beta
     bstar <- params$bstar
     Sigma0Inv <- params$Sigma0Inv
-
+    Sigma0 <- solve(Sigma0Inv)
     zl <- fn.sample.Zl(zl,zminus,yl, fitsl, condsd,condMeanMult, step=stepzl)
-    sigma2l <- fn.compute.sigma2(zl,a0,b0)
-    betal <- fn.sample.beta.l(yl, Xl,XtX.l,Beta,sigma2l,bstar, Sigma0Inv)
+    sigma2l <- rinvgamma(1, a0, b0) #fn.compute.sigma2(zl,a0,b0)
+    betal <- mvrnorm(1, Beta, bstar*Sigma0) #fn.sample.beta.l(yl, Xl,XtX.l,Beta,sigma2l,bstar, Sigma0Inv)
     yl <- rnorm(length(yl), Xl%*%betal, sqrt(sigma2l))
     statistic <- compute_statistics(yl, Xl, psi = psi, scaleEst=scaleEst, maxit = maxit) ###
 

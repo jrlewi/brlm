@@ -771,7 +771,6 @@ hierNormTheoryRestLm <- function(y,
   robustList<-list();length(robustList) <- nGroups
   bHatObsList <- list();length(bHatObsList) <- nGroups
   sigHatObsList <- list();length(sigHatObsList) <- nGroups
-  t_values <- list(); length(t_values) <- nGroups
   #fit the robust linear model to each group separately
   #modified for small groups?
   for(groups in 1:nGroups){
@@ -779,7 +778,6 @@ hierNormTheoryRestLm <- function(y,
     robustList[[groups]] <- robust
     bHatObsList[[groups]] <- robust$coef
     sigHatObsList[[groups]] <- robust$s
-    t_values[[groups]] <- as.numeric(summary(robust)$coefficients[, "t value"])
   }
 
   #####################
@@ -817,8 +815,7 @@ hierNormTheoryRestLm <- function(y,
     yCurr <- y
     stats_current <- array(NA, c(p+1, nGroups))
     for(i in 1:nGroups){
-      stats_current[, i] <- c(t_values[[i]], sigHatObsList[[i]])
-      #c(bHatObsList[[i]], sigHatObsList[[i]])
+      stats_current[, i] <- c(bHatObsList[[i]], sigHatObsList[[i]])
     }
   }
 
@@ -909,9 +906,8 @@ hierNormTheoryRestLm <- function(y,
           condsd<-sqrt(1-t(rho_vec)%*%Sigma_rhoInvMinus%*%rho_vec)
           condMeanMult<-t(rho_vec)%*%Sigma_rhoInvMinus
 
-          stat_obs <- c(t_values[[gp]],
+          stat_obs <- c(bHatObsList[[gp]],
                         sigHatObsList[[gp]])
-          #c(bHatObsList[[gp]],sigHatObsList[[gp]])
 
           params <- list(
             zl = Z[gp],
