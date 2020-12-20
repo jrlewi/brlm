@@ -900,41 +900,27 @@ hierNormTheoryRestLm <- function(y,
 
         for(gp in 1:nGroups){
 
-          fitsl <- fn.hat(X[[gp]], betalMat[,gp])
-          Sigma_rhoInvMinus<-fn.compute.SigmaRhoInv(rho, K=length(Z)-1)
-          rho_vec<-rep(rho, length(Z)-1)
-          condsd<-sqrt(1-t(rho_vec)%*%Sigma_rhoInvMinus%*%rho_vec)
-          condMeanMult<-t(rho_vec)%*%Sigma_rhoInvMinus
-
           stat_obs <- c(bHatObsList[[gp]],
                         sigHatObsList[[gp]])
 
           params <- list(
-            zl = Z[gp],
-            zminus  = Z[-gp],
             yl = yCurr[[gp]],
-            fitsl = fitsl,
-            condsd = condsd,
-            condMeanMult = condMeanMult,
-            stepzl = step_Z[gp],
             a0 = a0,
             b0 = b0,
             Xl = X[[gp]],
-            XtX.l = XtX[[gp]],
             Beta = Beta,
             bstar = bstar,
-            Sigma0Inv = Sigma0Inv
+            Sigma0 = Sigma0
           )
 
           current <- list(yl=yCurr[[gp]],
                           betal = betalMat[,gp],
                           sigma2l = sigma2[gp],
-                          zl = Z[gp],
                           statistic = stats_current[, gp])
 
           tol = bandwidth[gp]
 
-          update <- mh_abc_group(params, current, Xl=X[[gp]], stat_obs = stat_obs, tol = tol,
+          update <- mh_abc_group(params, current, stat_obs = stat_obs, tol = tol,
                                  psi = psi, scaleEst = scaleEst, maxit = maxit)
 
           yAccept[iter,gp] <- update$accept
@@ -942,7 +928,7 @@ hierNormTheoryRestLm <- function(y,
           yCurr[[gp]] <- sample$yl
           betalMat[, gp] <- sample$betal
           sigma2[gp] <- sample$sigma2l
-          Z[gp] <- sample$zl
+          Z[gp] <- fn.compute.Z(sigma2[gp],a0,b0)
           stats_current[, gp] <- sample$statistic
         }
 

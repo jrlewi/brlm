@@ -15,28 +15,21 @@ compute_statistics <- function(y, X, psi, scaleEst, maxit){
 proposal_group_abc <- function(params,
                                psi, scaleEst, maxit){
 
-    zl <- params$zl
-    zminus  <- params$zminus
+
     yl <- params$yl
-    fitsl <- params$fitsl
-    condsd <- params$condsd
-    condMeanMult <- params$condMeanMult
-    stepzl <- params$stepzl
     a0 <- params$a0
     b0 <- params$b0
     Xl <- params$Xl
-    XtX.l <- params$XtX.l
     Beta <- params$Beta
-    bstar <- params$bstar
-    Sigma0Inv <- params$Sigma0Inv
-    Sigma0 <- solve(Sigma0Inv)
-    zl <- fn.sample.Zl(zl,zminus,yl, fitsl, condsd,condMeanMult, step=stepzl)
-    sigma2l <- rinvgamma(1, a0, b0) #fn.compute.sigma2(zl,a0,b0)
-    betal <- mvrnorm(1, Beta, bstar*Sigma0) #fn.sample.beta.l(yl, Xl,XtX.l,Beta,sigma2l,bstar, Sigma0Inv)
-    yl <- rnorm(length(yl), Xl%*%betal, sqrt(sigma2l))
-    statistic <- compute_statistics(yl, Xl, psi = psi, scaleEst=scaleEst, maxit = maxit) ###
+    b <- params$bstar
+    Sigma0 <- params$Sigma0
 
-    list(yl = yl, betal = betal, sigma2l = sigma2l, zl = zl, statistic = statistic)
+    sigma2l <- rinvgamma(1, a0, b0)
+    betal <- mvrnorm(1, Beta, b*Sigma0)
+    yl <- rnorm(length(yl), Xl%*%betal, sqrt(sigma2l))
+    statistic <- compute_statistics(yl, Xl, psi = psi, scaleEst=scaleEst, maxit = maxit)
+
+    list(yl = yl, betal = betal, sigma2l = sigma2l, statistic = statistic)
 }
 
 
@@ -53,7 +46,7 @@ abc_distance_kernel <- function(d, tol){
     dnorm(d, sd = tol)
 }
 
-update_group_abc <- function(proposal, current, Xl, stat_obs, tol){
+update_group_abc <- function(proposal, current, stat_obs, tol){
 
     y_curr <- current$yl
     stat_curr <-  current$statistic
@@ -67,16 +60,11 @@ update_group_abc <- function(proposal, current, Xl, stat_obs, tol){
     stat_dist_prop <- stat_distance(stat_obs, stat_prop)
     stat_dist_current <- stat_distance(stat_obs, stat_curr)
 
-    # log_rat1 <- sum(dnorm(y_curr, Xl%*%beta_curr, sqrt(sigma2_curr),
-    #                       log = TRUE)) -
-    #             sum(dnorm(y_curr, Xl%*%beta_prop, sqrt(sigma2_prop),
-    #                       log = TRUE))
-    log_rat1 <- 0
-    log_rat2 <- log(abc_distance_kernel(stat_dist_prop, tol)) -
+    log_rat <- log(abc_distance_kernel(stat_dist_prop, tol)) -
                 log(abc_distance_kernel(stat_dist_current, tol))
 
 
-    mh_rat <- min(1, exp(log_rat1 + log_rat2))
+    mh_rat <- min(1, exp(log_rat))
     if(runif(1) < mh_rat){
       list(sample = proposal, accept = 1)
     } else {
@@ -85,9 +73,9 @@ update_group_abc <- function(proposal, current, Xl, stat_obs, tol){
       }
 
 
-mh_abc_group <- function(params, current, Xl, stat_obs, tol,
+mh_abc_group <- function(params, current, stat_obs, tol,
                          psi, scaleEst, maxit){
     proposal <- proposal_group_abc(params,
                                    psi = psi, scaleEst=scaleEst, maxit = maxit)
-    update_group_abc(proposal, current, Xl, stat_obs, tol)
+    update_group_abc(proposal, current, stat_obs, tol)
 }
