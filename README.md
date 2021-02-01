@@ -6,6 +6,3 @@ This package is an attempt to consolidate the code I used in my dissertation res
 As my career has taken me in other directions, I have had very little time to continue this line of research. I believe there are many directions future researchers could take and would be happy to allow pull requests if anyone is interested in code development - I admit the code and documentation could be improved in several areas. The documentation is written rather hastily (translating from comments in my source code to proper R documentation is no easy feat - one reason why I wish I did this in grad school!) and the code performance could be improved by re-writting in C++, for example. 
 
 Please let me know if you are using the code and have any questions!
-
-My Best,
-John
