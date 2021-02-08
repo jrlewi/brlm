@@ -31,6 +31,8 @@ fn.hier.one.rep(
   rho_step,
   step_Z,
   Sigma0Inv,
+  nGroups,
+  p,
   abc = FALSE
 )
 

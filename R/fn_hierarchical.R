@@ -128,7 +128,7 @@ fn.sample.bstar<-function(bstarCur,v1,v2,quad1,quad2, K,p, step_logbstar) {
 #' @param bstar: current value of bstar
 #' @details Sigma0 is fixed,  nGroups (number of groups) and swSq are fixed, and used within this function.
 
-fn.sample.Beta<-function(betalMat,bstar){
+fn.sample.Beta<-function(betalMat,bstar, nGroups){
   a<-1-bstar
   b<-bstar/swSq
   prec<-(1/a+nGroups/b)
@@ -443,6 +443,8 @@ fn.hier.one.rep<-function(y,
                           rho_step,
                           step_Z,
                           Sigma0Inv,
+                          nGroups,
+                          p,
                           abc = FALSE
 ){ #y, X are list of group level responses
   #fn.one.rep.beta.l loops through for each beta.l
@@ -457,7 +459,7 @@ fn.hier.one.rep<-function(y,
 
   sigma2 <- fn.compute.sigma2(Z,a0,b0)
   #[Beta|-]
-  Beta<-fn.sample.Beta(betalMat,bstar)
+  Beta<-fn.sample.Beta(betalMat,bstar, nGroups = nGroups)
 
   # [mu_bstr|-]
   # mu_bstr<-fn.sample.mubstr(mu_bstr,psi_bstr, bstar,step_mubstr)
@@ -588,7 +590,9 @@ hierNormTheoryLm<-function(y,
                           psi_rho_step,
                           rho_step,
                           step_Z,
-                          Sigma0Inv)
+                          Sigma0Inv,
+                          nGroups = nGroups,
+                          p = p)
     #update temp values
     Beta<-samp$Beta
     betalMat<-samp$betalMat
@@ -844,6 +848,8 @@ hierNormTheoryRestLm <- function(y,
                           rho_step,
                           step_Z,
                           Sigma0Inv,
+                          nGroups = nGroups,
+                          p = p,
                           abc = abc
                           )
     #update temp values

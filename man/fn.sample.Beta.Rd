@@ -5,7 +5,7 @@
 \title{sampling for beta in hieararchical model
 [Beta|-]}
 \usage{
-fn.sample.Beta(betalMat, bstar)
+fn.sample.Beta(betalMat, bstar, nGroups)
 }
 \arguments{
 \item{betalMat, }{matrix with columns equal to current beta_l's from each group}
