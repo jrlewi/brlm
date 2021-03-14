@@ -30,7 +30,10 @@ fn.hier.one.rep(
   psi_rho_step,
   rho_step,
   step_Z,
-  Sigma0Inv
+  Sigma0Inv,
+  nGroups,
+  p,
+  abc = FALSE
 )
 
 hierNormTheoryLm(
@@ -79,7 +82,12 @@ hierNormTheoryRestLm(
   mu_rho_step,
   psi_rho_step,
   rho_step,
-  step_Z
+  step_Z,
+  abc = FALSE,
+  bandwidth = NULL,
+  iter_check = 1000,
+  min_accept_rate = 0.1,
+  bw_mult = 1.2
 )
 
 fn.compute.marginals.hierModelNormal(
@@ -166,6 +174,9 @@ hier_TLm(
 
 \item{step_logbstar, mu_rho_step, psi_rho_step, rho_step, step_Z}{tunning parameters for MH Steps}
 
+\item{abc}{new option, defaults to FALSE, if TRUE then an Approximate Bayesian
+Computation method version is fit}
+
 \item{nkeep, nburn}{number of MCMC iterations to keep, number for burn in.}
 
 \item{Sigma0}{is the 'variance' matrix of beta b_i~N(mu0,b^*Sigma0)}
@@ -179,6 +190,9 @@ hier_TLm(
 \item{regEst}{Regression estimator on which to condition . Either Huber or Tukey.}
 
 \item{scaleEst}{Scale estimator on which to condition('Huber' is only option here)}
+
+\item{bandwidth}{for the abc kernel, scalar or vector of length(X) specifying the
+abc bandwidth for each group.}
 
 \item{betalsamples}{the array of betals: in the specific format: the 3rd dimension is the groups. columns represent samples, row represent slopes}
 
@@ -209,4 +223,6 @@ Function to fit restricted likelihood version of hierarchical model in paper
 fn.hier.one.rep is one rep for the full normal thoery model. heirNormTheoryLm uses fn.hier.one.rep for the complete MCMC of full normal thoert model. hierNormTheoryRestLm does the same for the restricted versions. The corresponding t-model versions are handedl by fn.one.rep.tHierModel and hier_TLm.
 
 Details of the model are describted in the paper.
+
+for abc version method - see ()
 }

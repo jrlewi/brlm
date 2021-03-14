@@ -128,7 +128,7 @@ fn.sample.bstar<-function(bstarCur,v1,v2,quad1,quad2, K,p, step_logbstar) {
 #' @param bstar: current value of bstar
 #' @details Sigma0 is fixed,  nGroups (number of groups) and swSq are fixed, and used within this function.
 
-fn.sample.Beta<-function(betalMat,bstar){
+fn.sample.Beta<-function(betalMat,bstar, nGroups){
   a<-1-bstar
   b<-bstar/swSq
   prec<-(1/a+nGroups/b)
@@ -442,18 +442,24 @@ fn.hier.one.rep<-function(y,
                           psi_rho_step,
                           rho_step,
                           step_Z,
-                          Sigma0Inv
+                          Sigma0Inv,
+                          nGroups,
+                          p,
+                          abc = FALSE
 ){ #y, X are list of group level responses
   #fn.one.rep.beta.l loops through for each beta.l
+  if(!abc){
   #[beta_i|-]
-  sigma2<-fn.compute.sigma2(Z,a0,b0)
-  betalMat<-fn.one.rep.beta.l(y, X,XtX,Beta,sigma2,bstar,betalMat, Sigma0Inv)
+  sigma2 <- fn.compute.sigma2(Z,a0,b0)
+  betalMat <- fn.one.rep.beta.l(y, X,XtX,Beta,sigma2,bstar,betalMat, Sigma0Inv)
   #[Z|-] i.e. the sigma2_is
   #fn.one.rep.Z loops through for all the z_i
-  Z<-fn.one.rep.Z(Z, y,X, betalMat, rho,step=step_Z)
-  sigma2<-fn.compute.sigma2(Z,a0,b0)
+  Z <- fn.one.rep.Z(Z, y,X, betalMat, rho,step=step_Z)
+  }
+
+  sigma2 <- fn.compute.sigma2(Z,a0,b0)
   #[Beta|-]
-  Beta<-fn.sample.Beta(betalMat,bstar)
+  Beta<-fn.sample.Beta(betalMat,bstar, nGroups = nGroups)
 
   # [mu_bstr|-]
   # mu_bstr<-fn.sample.mubstr(mu_bstr,psi_bstr, bstar,step_mubstr)
@@ -584,7 +590,9 @@ hierNormTheoryLm<-function(y,
                           psi_rho_step,
                           rho_step,
                           step_Z,
-                          Sigma0Inv)
+                          Sigma0Inv,
+                          nGroups = nGroups,
+                          p = p)
     #update temp values
     Beta<-samp$Beta
     betalMat<-samp$betalMat
@@ -632,6 +640,11 @@ hierNormTheoryLm<-function(y,
 #' @inheritParams hierNormTheoryLm
 #' @param regEst Regression estimator on which to condition . Either Huber or Tukey.
 #' @param scaleEst Scale estimator on which to condition('Huber' is only option here)
+#' @param abc new option, defaults to FALSE, if TRUE then an Approximate Bayesian
+#' Computation method version is fit
+#' @param bandwidth for the abc kernel, scalar or vector of length(X) specifying the
+#' abc bandwidth for each group.
+#' @details for abc version method - see ()
 #' @export
 hierNormTheoryRestLm <- function(y,
                                 X,
@@ -654,11 +667,26 @@ hierNormTheoryRestLm <- function(y,
                                 mu_rho_step,
                                 psi_rho_step,
                                 rho_step,
-                                step_Z)
+                                step_Z,
+                                abc = FALSE,
+                                bandwidth=NULL,
+                                iter_check = 1000,
+                                min_accept_rate = 0.1,
+                                bw_mult = 1.2)
 {
   #y is a list of the responses for each group
   #X is the design Matrix-a list of the design matrices Xi for each group
   #X[[i]] is the design matrix for each group
+
+  if(abc & is.null(bandwidth)){
+    stop("abc cannot be set to TRUE with a null bandwidth parameter")
+  }
+  if(abc & (length(bandwidth) == 1)){
+    bandwidth <- rep(bandwidth, length(X))
+  }
+  if(abc & (length(bandwidth) != length(X))){
+    stop("if bandwidth is not a scalar, its length must match the number of groups.")
+  }
 
   mu0<-mu0
   Sigma0<-Sigma0
@@ -699,6 +727,14 @@ hierNormTheoryRestLm <- function(y,
   logprop.curr<-matrix(NA,total,nGroups)
   yMhRatios<-matrix(NA,total,nGroups)
 
+  #saving the sampled statistics, if abc
+  # if(abc){
+  #   sampled_stats <- array(NA, c(p+1, nGroups, total))
+  # } else {
+  #   sampled_stats <- NA
+  # }
+
+
   #initial values
   #starting values of parameters
   #mu_bstr<-rbeta(1, alpha_mustr,beta_mustr)
@@ -714,7 +750,7 @@ hierNormTheoryRestLm <- function(y,
   rho<-runif(1, .1, .9)
   Sigma_rho<-(1-rho)*diag(nGroups)+matrix(1, nGroups,nGroups)*rho
   Z<-mvrnorm(1, rep(0,nGroups), Sigma_rho)
-
+  sigma2 <- fn.compute.sigma2(Z,a0,b0)
 
 
 
@@ -736,22 +772,22 @@ hierNormTheoryRestLm <- function(y,
   }
   fn.chi<-fn.chi.prop2
 
-  robustList<-list();length(robustList)<-nGroups
-  bHatObsList<-list();length(bHatObsList)<-nGroups
-  sigHatObsList<-list();length(sigHatObsList)<-nGroups
-
+  robustList<-list();length(robustList) <- nGroups
+  bHatObsList <- list();length(bHatObsList) <- nGroups
+  sigHatObsList <- list();length(sigHatObsList) <- nGroups
   #fit the robust linear model to each group separately
   #modified for small groups?
   for(groups in 1:nGroups){
-    robust<-rlm(X[[groups]],y[[groups]],psi=psi, scale.est=scaleEst, maxit=maxit)
-    robustList[[groups]]<-robust
-    bHatObsList[[groups]]<-robust$coef
-    sigHatObsList[[groups]]<-robust$s
+    robust <- rlm(X[[groups]],y[[groups]],psi=psi, scale.est=scaleEst, maxit=maxit)
+    robustList[[groups]] <- robust
+    bHatObsList[[groups]] <- robust$coef
+    sigHatObsList[[groups]] <- robust$s
   }
 
   #####################
   #choose starting value for yi
   #####################
+  if(!abc){
   log.prop.den.curr<-numeric(nGroups)
   yCurr<-list(); length(yCurr)<-nGroups
   for(i in 1:nGroups){
@@ -777,6 +813,14 @@ hierNormTheoryRestLm <- function(y,
     yCurri<-yCurri
     yCurr[[i]]<-yCurri
     log.prop.den.curr[i]<-log.prop.den2(yCurri,Xi, proji,Qti,bHatObsi, sigHatObsi,fn.psi, fn.chi,ni[i],p)
+    }
+  } else {
+    #for abc version
+    yCurr <- y
+    stats_current <- array(NA, c(p+1, nGroups))
+    for(i in 1:nGroups){
+      stats_current[, i] <- c(bHatObsList[[i]], sigHatObsList[[i]])
+    }
   }
 
 
@@ -786,7 +830,7 @@ hierNormTheoryRestLm <- function(y,
   for(iter in 1:total){
 
     #[theta|everything] step
-    samp<-fn.hier.one.rep(yCurr,
+    samp <- fn.hier.one.rep(yCurr,
                           X,
                           XtX,
                           v1,#mu_bstr,
@@ -803,12 +847,20 @@ hierNormTheoryRestLm <- function(y,
                           psi_rho_step,
                           rho_step,
                           step_Z,
-                          Sigma0Inv)
+                          Sigma0Inv,
+                          nGroups = nGroups,
+                          p = p,
+                          abc = abc
+                          )
     #update temp values
-    Beta<-samp$Beta
+    # if abc, these will be the same as what was input
+    if(!abc){
     betalMat<-samp$betalMat
     Z<-samp$Z
     sigma2<-samp$sigma2
+    }
+
+    Beta<-samp$Beta
     #mu_bstr<-samp$mu_bstr
     #psi_bstr<-samp$psi_bstr
     bstar<-samp$bstar
@@ -817,8 +869,10 @@ hierNormTheoryRestLm <- function(y,
     rho<-samp$rho
     #update outputs
     BetaSamples[iter,]<-Beta
+    if(!abc){
     betaGroupSamples[,,iter]<-betalMat
     sigma2Samples[iter,]<-sigma2
+    }
     # mu_bstrSamples[iter]<-mu_bstr
     #psi_bstrSamples[iter]<-psi_bstr
     bstarSamples[iter]<-bstar
@@ -826,6 +880,7 @@ hierNormTheoryRestLm <- function(y,
     psi_rhoSamples[iter]<-psi_rho
     rhoSamples[iter]<-rho
 
+    if(!abc){
     #[y|everything + robust statistics] step; each group updated separately
     for(gp in 1:nGroups){
       yicurr<-yCurr[[gp]]
@@ -844,24 +899,72 @@ hierNormTheoryRestLm <- function(y,
       logprop.curr[iter,gp]<-ySample[[3]]
       yMhRatios[iter,gp]<-ySample[[4]]
     }
+    } else {
+      #sampling steps for abc
+        #update steps for beta_i's, sigma_i's (through the z's) and y_i's
+        #based on abc version
+
+        for(gp in 1:nGroups){
+
+          stat_obs <- c(bHatObsList[[gp]],
+                        sigHatObsList[[gp]])
+
+          params <- list(
+            yl = yCurr[[gp]],
+            a0 = a0,
+            b0 = b0,
+            Xl = X[[gp]],
+            Beta = Beta,
+            bstar = bstar,
+            Sigma0 = Sigma0
+          )
+
+          current <- list(yl=yCurr[[gp]],
+                          betal = betalMat[,gp],
+                          sigma2l = sigma2[gp],
+                          statistic = stats_current[, gp])
+
+          tol = bandwidth[gp]
+
+          update <- mh_abc_group(params, current, stat_obs = stat_obs, tol = tol,
+                                 psi = psi, scaleEst = scaleEst, maxit = maxit)
+
+          yAccept[iter,gp] <- update$accept
+          sample <- update$sample
+          yCurr[[gp]] <- sample$yl
+          betalMat[, gp] <- sample$betal
+          sigma2[gp] <- sample$sigma2l
+          Z[gp] <- fn.compute.Z(sigma2[gp],a0,b0)
+          stats_current[, gp] <- sample$statistic
+        }
+
+      betaGroupSamples[,,iter] <- betalMat
+      sigma2Samples[iter,] <- sigma2
+      #step to check acceptance rates and increase bandwidth if
+      # they are small. only check that last several cases.
+      if ((iter > 1000) & (iter %/% iter_check == iter/iter_check)) {
+        inds_to_check <- (iter - iter_check + 1):iter
+        recent_accept_rate <- apply(yAccept[inds_to_check, ], 2, mean, na.rm = TRUE)
+        increase_band_inds <- which(recent_accept_rate < min_accept_rate)
+        bandwidth[increase_band_inds] <- bw_mult*bandwidth[increase_band_inds]
+      }
+      }
   }
 
-  out<-list()
-  out$Beta<-BetaSamples[-c(1:nburn),]
-  out$betal<-betaGroupSamples[,,-c(1:nburn)]
-  out$sigma2s<-sigma2Samples[-c(1:nburn),]
-  # out$mu_bstr<-mu_bstrSamples[-c(1:nburn)]
-  #  out$psi_bstr<-psi_bstrSamples[-c(1:nburn)]
-  out$bstar<-bstarSamples[-c(1:nburn)]
-  out$mu_rho<-mu_rhoSamples[-c(1:nburn)]
-  out$psi_rho<-psi_rhoSamples[-c(1:nburn)]
-  out$rho<-rhoSamples[-c(1:nburn)]
-  #   out$yAccept<-yAccept #colMeans(yAccept)
-  out$yAccept<-colMeans(yAccept)
-  out$rlmFits<-robustList
-  hypers<-c(a0,b0,swSq,w1,w2,a_psir,b_psir, mu_bstr,psi_bstr)
-  names(hypers)<-c("a0","b0","swSq",'w1',"w2","a_psir","b_psir", 'mu_bstr', "psi_bstr")
-  out$hypers<-hypers
+  out <- list()
+  out$Beta <- BetaSamples[-c(1:nburn),]
+  out$betal <- betaGroupSamples[,,-c(1:nburn)]
+  out$sigma2s <- sigma2Samples[-c(1:nburn),]
+  out$bstar <- bstarSamples[-c(1:nburn)]
+  out$mu_rho <- mu_rhoSamples[-c(1:nburn)]
+  out$psi_rho <- psi_rhoSamples[-c(1:nburn)]
+  out$rho <- rhoSamples[-c(1:nburn)]
+  out$yAccept <- colMeans(yAccept)
+  out$rlmFits <- robustList
+  hypers <- c(a0,b0,swSq,w1,w2,a_psir,b_psir, mu_bstr,psi_bstr)
+  names(hypers) <- c("a0","b0","swSq",'w1',"w2","a_psir","b_psir", 'mu_bstr', "psi_bstr")
+  out$hypers <- hypers
+  out$bandwidth <- bandwidth
   out
 }
 
