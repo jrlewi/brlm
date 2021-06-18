@@ -18,7 +18,9 @@ fn.one.rep.y(
   fn.chi,
   psi,
   scaleEst,
-  maxit = 400
+  maxit = 400,
+  base_model = "normal",
+  nu = NULL
 )
 
 fn.one.rep.y2(
@@ -35,7 +37,9 @@ fn.one.rep.y2(
   fn.chi,
   psi,
   scaleEst,
-  maxit = 400
+  maxit = 400,
+  base_model = "normal",
+  nu = NULL
 )
 }
 \arguments{
@@ -55,9 +59,11 @@ fn.one.rep.y2(
 
 \item{proj}{the projection matrix onto the deviation space (aka the least squares residual space)}
 
-\item{fn.psi}{custom psi function returning psi(x) or psi'(x) defining M-estimator for location ; default is fn.psi.huber}
+\item{fn.psi}{custom psi function returning psi(x) or psi'(x) defining M-estimator for location ;
+default is fn.psi.huber}
 
-\item{fn.chi}{custom chi function returning chi(x) or chi'(x) defining M-estimator for scale; default (and currently only capability) is fn.chi.prop2}
+\item{fn.chi}{custom chi function returning chi(x) or chi'(x) defining M-estimator for scale;
+default (and currently only capability) is fn.chi.prop2}
 
 \item{psi}{psi function returning psi(x)/x. Must match fn.spi, but currently no warning is thrown.}
 
@@ -65,14 +71,26 @@ fn.one.rep.y2(
 
 \item{maxit}{max iterations for the estimation of the summary statistics}
 
+\item{base_model}{normal or t}
+
+\item{nu}{degrees of freedom if base_model = "t"}
+
 \item{Qt}{Q transpose where Q is the orthonormalized X}
 }
 \value{
-list y.curr: the new (if accepted) or same (if rejected) data vector, a: indicator of acceptance of proposed value 1 if accepted, 0 if rejected, log.prop.den.curr: proposal density on log scale of the returned data vector, rat: MH ratio, log.rat1: log ratio of proposal densities
+list y.curr: the new (if accepted) or same (if rejected) data vector, a: indicator of
+ acceptance of proposed value 1 if accepted, 0 if rejected, log.prop.den.curr: proposal density
+ on log scale of the returned data vector, rat: MH ratio, log.rat1: log ratio of proposal
+ densities
 }
 \description{
 Performs a single Metropolis-Hastings step for the restricted likelihood method
 }
 \details{
-Two equivalent versions, the second uses \code{fn.attenuation2} and is faster. This function is designed for use within an MCMC sampler. Many of the inputs are iteration dependent. The input \code{log.prop.den.curr} is designed as a time saver. Since this is free of other parameters it can be saved from iteration to iteration to save computation time. Note the use of both fn.psi (custom in the \link{brlm} package) and psi (from the \link{MASS} package). This is poor coding and should be corrected.
+Two equivalent versions, the second uses \code{fn.attenuation2} and is faster. This
+ function is designed for use within an MCMC sampler. Many of the inputs are iteration dependent.
+ The input \code{log.prop.den.curr} is designed as a time saver. Since this is free of other
+ parameters it can be saved from iteration to iteration to save computation time. Note the use of
+ both fn.psi (custom in the \link{brlm} package) and psi (from the \link{MASS} package). This is
+ poor coding and should be corrected.
 }

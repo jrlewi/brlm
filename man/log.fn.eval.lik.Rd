@@ -2,9 +2,9 @@
 % Please edit documentation in R/log_fn_eval_lik.R
 \name{log.fn.eval.lik}
 \alias{log.fn.eval.lik}
-\title{Full likelihood under Gaussian model}
+\title{Full likelihood under Gaussian model or T model}
 \usage{
-\method{log}{fn.eval.lik}(ystst, X, Beta, sig)
+\method{log}{fn.eval.lik}(ystst, X, Beta, sig, base_model = "normal", nu = NULL)
 }
 \arguments{
 \item{ystst}{a data vector such that T(ystst)=T(y_obs)}
@@ -14,12 +14,16 @@
 \item{Beta}{regression coeff}
 
 \item{sig}{sigma, standard deviation of residuals}
+
+\item{base_model}{normal or t}
+
+\item{nu}{degrees of freedom if base_model = "t"}
 }
 \value{
 the log likelihood
 }
 \description{
-Full likelihood under Gaussian model
+Full likelihood under Gaussian model or T model
 }
 \details{
 designed for use within \code{fn.one.rep.y}
