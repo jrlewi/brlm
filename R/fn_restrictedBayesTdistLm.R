@@ -60,6 +60,7 @@ restrictedBayesTdistLm <-
     betaSamples <- array(NA, dim = c(total, p))
     sigma2Samples <- numeric(total)
     acceptSigma2 <- numeric(total)
+    yAccept <- numeric(total)
 
     Q <- qr.Q(qr(X))
     projMatrix <- as.matrix(diag(n) - tcrossprod(Q, Q)) #Q%*%t(Q)
@@ -84,6 +85,17 @@ restrictedBayesTdistLm <-
       stop('scale estimate only set up for Hubers Prop2 ')
     }
     fn.chi <- fn.chi.prop2
+
+    #run the robust regression
+    robust <- rlm(X,
+                  y,
+                  psi = psi,
+                  scale.est = scaleEst,
+                  maxit = maxit)
+    #condition on these estimates
+    l1obs <- robust$coefficients
+    s1obs <- robust$s
+
 
     ############
     #Sampling functions
@@ -153,8 +165,13 @@ restrictedBayesTdistLm <-
           fn.chi,
           psi,
           scaleEst,
-          maxit
+          maxit,
+          base_model = "t",
+          nu = nu
         )
+      y.curr <- ySample[[1]]
+      yAccept[i] <- ySample[[2]]
+      log.prop.den.curr <- ySample[[3]]
 
 
       betaSamples[i, ] <- betaCur
@@ -176,5 +193,6 @@ restrictedBayesTdistLm <-
     out$mcmc <- mcmcBetaSigma2
     out$fitted.values <- fittedValues
     out$acceptSigma2 <- acceptSigma2
+    out$yAccept <- yAccept
     out
   }

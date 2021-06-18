@@ -9,3 +9,26 @@
 #' }
 
 
+define_psi_chi <- function(regEst, scaleEst){
+  ############################
+  #define the psi and chi functions
+  ############################
+  if (regEst == 'Huber') {
+    psi <- get('psi.huber') #internal
+    fn.psi <- get('fn.psi.huber')
+
+  } else {
+    if (regEst == 'Tukey') {
+      psi <- get('psi.bisquare') #internal
+      fn.psi <- get('fn.psi.bisquare')
+    } else {
+      stop("only set up for Huber or Tukey regression estimates")
+    }
+  }
+
+  if (scaleEst != 'Huber') {
+    stop('scale estimate only set up for Hubers Prop2 ')
+  }
+  fn.chi <- fn.chi.prop2
+  list(fn.psi, psi, fn.chi)
+}
