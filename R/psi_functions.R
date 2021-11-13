@@ -30,3 +30,32 @@ fn.chi.prop2<-function(u, k=1.345, deriv=0, b=.71016){
 }
 
 
+#'@rdname psi
+psi.quantile <-function(u, tau = 0.99, deriv = 0){
+  if(deriv == 0){
+    #note - quantiles have 0 psi', so try expectiles.
+
+    val <- 2*u*tau*(u > 0) + 2*u*(1 - tau)*(u < 0)
+    val <- val/u
+  }
+  if(deriv == 1){
+    val <- 2*u*tau*(u > 0) + 2*u*(1 - tau)*(u < 0)
+  }
+  val
+}
+
+#'@rdname psi
+fn.psi.quantile <-function(u, tau = 0.99, deriv = 0){
+  if(deriv == 0){
+    val <- 2*u*tau*(u > 0) + 2*u*(1 - tau)*(u < 0)
+  }
+  if(deriv == 1){
+    val <- 2*tau*(u > 0) + 2*(1 - tau)*(u < 0)
+  }
+  val
+}
+
+
+
+
+

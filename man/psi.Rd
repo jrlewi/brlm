@@ -5,6 +5,8 @@
 \alias{fn.psi.huber}
 \alias{fn.psi.bisquare}
 \alias{fn.chi.prop2}
+\alias{psi.quantile}
+\alias{fn.psi.quantile}
 \title{Psi functions}
 \usage{
 fn.psi.huber(u, k = 1.345, deriv = 0)
@@ -12,6 +14,10 @@ fn.psi.huber(u, k = 1.345, deriv = 0)
 fn.psi.bisquare(u, c = 4.685, deriv = 0)
 
 fn.chi.prop2(u, k = 1.345, deriv = 0, b = 0.71016)
+
+psi.quantile(u, tau = 0.99, deriv = 0)
+
+fn.psi.quantile(u, tau = 0.99, deriv = 0)
 }
 \arguments{
 \item{u}{numeric vector of evaluation points}
