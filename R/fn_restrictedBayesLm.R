@@ -67,13 +67,19 @@ restrictedBayesLm <-
         psi <- get('psi.bisquare') #internal
         fn.psi <- get('fn.psi.bisquare')
       } else {
-        stop("only set up for Huber or Tukey regression estimates")
+      if(regEst == "quantile"){
+       psi <- get('psi.quantile')
+       fn.psi <- get('fn.psi.quantile')
+      }
+      else {
+        stop("only set up for Huber, Tukey, expectile, regression estimates")
       }
     }
 
     if (scaleEst != 'Huber') {
       stop('scale estimate only set up for Hubers Prop2 ')
     }
+      }
     fn.chi <- fn.chi.prop2
     ################################
 
